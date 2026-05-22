@@ -1,0 +1,67 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+export class PaginatedResponseDto<T> {
+  @ApiProperty({ description: 'Array of items' })
+  data: T[];
+
+  @ApiProperty({ description: 'Metadata for pagination' })
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+
+  constructor(data: T[], total: number, page: number, limit: number) {
+    this.data = data;
+    const totalPages = Math.ceil(total / limit);
+    this.meta = {
+      total,
+      page,
+      limit,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    };
+  }
+}
+
+export class ApiResponseDto<T> {
+  @ApiProperty({ description: 'Indicates if the request was successful' })
+  success!: boolean;
+
+  @ApiPropertyOptional({ description: 'Response message' })
+  message?: string;
+
+  @ApiPropertyOptional({ description: 'Response data' })
+  data?: T;
+
+  @ApiPropertyOptional({ description: 'Error details' })
+  error?: any;
+
+  @ApiProperty({ description: 'Timestamp of the response' })
+  timestamp!: string;
+
+  constructor(partial: Partial<ApiResponseDto<T>>) {
+    Object.assign(this, partial);
+    this.timestamp = new Date().toISOString();
+  }
+
+  static success<T>(data: T, message?: string): ApiResponseDto<T> {
+    return new ApiResponseDto({
+      success: true,
+      data,
+      message,
+    });
+  }
+
+  static error<T>(message: string, error?: any): ApiResponseDto<T> {
+    return new ApiResponseDto({
+      success: false,
+      message,
+      error,
+    });
+  }
+}

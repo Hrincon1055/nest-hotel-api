@@ -1,0 +1,3436 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/v1/auth/login": {
+      "post": {
+        "operationId": "AuthController_login_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                    "employee": {
+                      "id": "uuid",
+                      "email": "admin@hotel.com",
+                      "firstName": "Admin",
+                      "lastName": "User",
+                      "role": "ADMIN"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        },
+        "summary": "Employee login",
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/api/v1/v1/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tokens refreshed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid refresh token"
+          }
+        },
+        "summary": "Refresh access token",
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/api/v1/v1/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Logout successful"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Logout user",
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/api/v1/v1/auth/me": {
+      "post": {
+        "operationId": "AuthController_me_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Current user info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "uuid",
+                    "email": "admin@hotel.com",
+                    "firstName": "Admin",
+                    "lastName": "User",
+                    "role": "ADMIN"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get current user info",
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/api/v1/v1/employees": {
+      "post": {
+        "operationId": "EmployeesController_create_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEmployeeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Employee created successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "409": {
+            "description": "Email already exists"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new employee",
+        "tags": [
+          "Employees"
+        ]
+      },
+      "get": {
+        "operationId": "EmployeesController_findAll_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": {
+              "default": "desc",
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "role",
+            "required": false,
+            "in": "query",
+            "description": "Filter by role",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ADMIN",
+                "MANAGER",
+                "RECEPTIONIST",
+                "HOUSEKEEPING"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACTIVE",
+                "INACTIVE",
+                "ON_LEAVE",
+                "TERMINATED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of employees"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all employees with pagination and filters",
+        "tags": [
+          "Employees"
+        ]
+      }
+    },
+    "/api/v1/v1/employees/{id}": {
+      "get": {
+        "operationId": "EmployeesController_findOne_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Employee UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Employee details"
+          },
+          "404": {
+            "description": "Employee not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get employee by ID",
+        "tags": [
+          "Employees"
+        ]
+      },
+      "patch": {
+        "operationId": "EmployeesController_update_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Employee UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEmployeeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Employee updated successfully"
+          },
+          "404": {
+            "description": "Employee not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update employee",
+        "tags": [
+          "Employees"
+        ]
+      },
+      "delete": {
+        "operationId": "EmployeesController_remove_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Employee UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Employee deleted successfully"
+          },
+          "404": {
+            "description": "Employee not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete employee (soft delete)",
+        "tags": [
+          "Employees"
+        ]
+      }
+    },
+    "/api/v1/v1/employees/{id}/change-password": {
+      "patch": {
+        "operationId": "EmployeesController_changePasswordAdmin_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Employee UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password changed successfully"
+          },
+          "404": {
+            "description": "Employee not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Change employee password (Admin only)",
+        "tags": [
+          "Employees"
+        ]
+      }
+    },
+    "/api/v1/v1/employees/me/change-password": {
+      "patch": {
+        "operationId": "EmployeesController_changeOwnPassword_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password changed successfully"
+          },
+          "400": {
+            "description": "Current password is incorrect"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Change own password",
+        "tags": [
+          "Employees"
+        ]
+      }
+    },
+    "/api/v1/v1/employees/{id}/restore": {
+      "post": {
+        "operationId": "EmployeesController_restore_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Employee UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Employee restored successfully"
+          },
+          "404": {
+            "description": "Deleted employee not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Restore deleted employee",
+        "tags": [
+          "Employees"
+        ]
+      }
+    },
+    "/api/v1/v1/customers": {
+      "post": {
+        "operationId": "CustomersController_create_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Customer created successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "409": {
+            "description": "Email or document already exists"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new customer",
+        "tags": [
+          "Customers"
+        ]
+      },
+      "get": {
+        "operationId": "CustomersController_findAll_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": {
+              "default": "desc",
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "documentType",
+            "required": false,
+            "in": "query",
+            "description": "Filter by document type",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PASSPORT",
+                "NATIONAL_ID",
+                "DRIVERS_LICENSE",
+                "OTHER"
+              ]
+            }
+          },
+          {
+            "name": "nationality",
+            "required": false,
+            "in": "query",
+            "description": "Filter by nationality",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of customers"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all customers with pagination and filters",
+        "tags": [
+          "Customers"
+        ]
+      }
+    },
+    "/api/v1/v1/customers/{id}": {
+      "get": {
+        "operationId": "CustomersController_findOne_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Customer UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer details with recent reservations"
+          },
+          "404": {
+            "description": "Customer not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get customer by ID",
+        "tags": [
+          "Customers"
+        ]
+      },
+      "patch": {
+        "operationId": "CustomersController_update_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Customer UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCustomerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Customer updated successfully"
+          },
+          "404": {
+            "description": "Customer not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update customer",
+        "tags": [
+          "Customers"
+        ]
+      },
+      "delete": {
+        "operationId": "CustomersController_remove_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Customer UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer deleted successfully"
+          },
+          "404": {
+            "description": "Customer not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete customer (soft delete)",
+        "tags": [
+          "Customers"
+        ]
+      }
+    },
+    "/api/v1/v1/customers/{id}/reservations": {
+      "get": {
+        "operationId": "CustomersController_getReservationHistory_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Customer UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer reservation history"
+          },
+          "404": {
+            "description": "Customer not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get customer reservation history",
+        "tags": [
+          "Customers"
+        ]
+      }
+    },
+    "/api/v1/v1/customers/{id}/restore": {
+      "post": {
+        "operationId": "CustomersController_restore_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Customer UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer restored successfully"
+          },
+          "404": {
+            "description": "Deleted customer not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Restore deleted customer",
+        "tags": [
+          "Customers"
+        ]
+      }
+    },
+    "/api/v1/v1/rooms": {
+      "post": {
+        "operationId": "RoomsController_create_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRoomDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Room created successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "409": {
+            "description": "Room number already exists"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new room",
+        "tags": [
+          "Rooms"
+        ]
+      },
+      "get": {
+        "operationId": "RoomsController_findAll_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": {
+              "default": "desc",
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Filter by room type",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "SINGLE",
+                "DOUBLE",
+                "TWIN",
+                "SUITE",
+                "DELUXE",
+                "PRESIDENTIAL",
+                "FAMILY"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "AVAILABLE",
+                "OCCUPIED",
+                "RESERVED",
+                "CLEANING",
+                "MAINTENANCE",
+                "OUT_OF_SERVICE"
+              ]
+            }
+          },
+          {
+            "name": "floor",
+            "required": false,
+            "in": "query",
+            "description": "Filter by floor",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "minCapacity",
+            "required": false,
+            "in": "query",
+            "description": "Minimum capacity",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "maxPrice",
+            "required": false,
+            "in": "query",
+            "description": "Maximum price per night",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "minPrice",
+            "required": false,
+            "in": "query",
+            "description": "Minimum price per night",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of rooms"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all rooms with pagination and filters",
+        "tags": [
+          "Rooms"
+        ]
+      }
+    },
+    "/api/v1/v1/rooms/stats": {
+      "get": {
+        "operationId": "RoomsController_getStats_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Room statistics"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get room statistics",
+        "tags": [
+          "Rooms"
+        ]
+      }
+    },
+    "/api/v1/v1/rooms/availability": {
+      "get": {
+        "operationId": "RoomsController_checkAvailability_v1",
+        "parameters": [
+          {
+            "name": "checkInDate",
+            "required": false,
+            "in": "query",
+            "description": "Check-in date",
+            "schema": {
+              "example": "2024-12-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "checkOutDate",
+            "required": false,
+            "in": "query",
+            "description": "Check-out date",
+            "schema": {
+              "example": "2024-12-05",
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Filter by room type",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "SINGLE",
+                "DOUBLE",
+                "TWIN",
+                "SUITE",
+                "DELUXE",
+                "PRESIDENTIAL",
+                "FAMILY"
+              ]
+            }
+          },
+          {
+            "name": "capacity",
+            "required": false,
+            "in": "query",
+            "description": "Minimum capacity",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Available rooms for the period"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Check room availability for dates",
+        "tags": [
+          "Rooms"
+        ]
+      }
+    },
+    "/api/v1/v1/rooms/{id}": {
+      "get": {
+        "operationId": "RoomsController_findOne_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Room UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Room details"
+          },
+          "404": {
+            "description": "Room not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get room by ID",
+        "tags": [
+          "Rooms"
+        ]
+      },
+      "patch": {
+        "operationId": "RoomsController_update_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Room UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRoomDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Room updated successfully"
+          },
+          "404": {
+            "description": "Room not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update room",
+        "tags": [
+          "Rooms"
+        ]
+      },
+      "delete": {
+        "operationId": "RoomsController_remove_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Room UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Room deleted successfully"
+          },
+          "400": {
+            "description": "Room has active reservations"
+          },
+          "404": {
+            "description": "Room not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete room (soft delete)",
+        "tags": [
+          "Rooms"
+        ]
+      }
+    },
+    "/api/v1/v1/rooms/{id}/status": {
+      "patch": {
+        "operationId": "RoomsController_updateStatus_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Room UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Room status updated"
+          },
+          "404": {
+            "description": "Room not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update room status",
+        "tags": [
+          "Rooms"
+        ]
+      }
+    },
+    "/api/v1/v1/rooms/{id}/restore": {
+      "post": {
+        "operationId": "RoomsController_restore_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Room UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Room restored successfully"
+          },
+          "404": {
+            "description": "Deleted room not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Restore deleted room",
+        "tags": [
+          "Rooms"
+        ]
+      }
+    },
+    "/api/v1/v1/reservations": {
+      "post": {
+        "operationId": "ReservationsController_create_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReservationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Reservation created successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Customer or room not found"
+          },
+          "409": {
+            "description": "Room not available for selected dates"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new reservation",
+        "tags": [
+          "Reservations"
+        ]
+      },
+      "get": {
+        "operationId": "ReservationsController_findAll_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": {
+              "default": "desc",
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "CONFIRMED",
+                "CHECKED_IN",
+                "CHECKED_OUT",
+                "CANCELLED",
+                "NO_SHOW"
+              ]
+            }
+          },
+          {
+            "name": "customerId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by customer ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "roomId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by room ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "checkInFrom",
+            "required": false,
+            "in": "query",
+            "description": "Filter by check-in date from",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "checkInTo",
+            "required": false,
+            "in": "query",
+            "description": "Filter by check-in date to",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "checkOutFrom",
+            "required": false,
+            "in": "query",
+            "description": "Filter by check-out date from",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "checkOutTo",
+            "required": false,
+            "in": "query",
+            "description": "Filter by check-out date to",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of reservations"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all reservations with pagination and filters",
+        "tags": [
+          "Reservations"
+        ]
+      }
+    },
+    "/api/v1/v1/reservations/today/arrivals": {
+      "get": {
+        "operationId": "ReservationsController_getTodayArrivals_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of today arrivals"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get today arrivals",
+        "tags": [
+          "Reservations"
+        ]
+      }
+    },
+    "/api/v1/v1/reservations/today/departures": {
+      "get": {
+        "operationId": "ReservationsController_getTodayDepartures_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of today departures"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get today departures",
+        "tags": [
+          "Reservations"
+        ]
+      }
+    },
+    "/api/v1/v1/reservations/code/{code}": {
+      "get": {
+        "operationId": "ReservationsController_findByCode_v1",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "path",
+            "description": "Reservation code",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reservation details"
+          },
+          "404": {
+            "description": "Reservation not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get reservation by code",
+        "tags": [
+          "Reservations"
+        ]
+      }
+    },
+    "/api/v1/v1/reservations/{id}": {
+      "get": {
+        "operationId": "ReservationsController_findOne_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Reservation UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reservation details"
+          },
+          "404": {
+            "description": "Reservation not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get reservation by ID",
+        "tags": [
+          "Reservations"
+        ]
+      },
+      "patch": {
+        "operationId": "ReservationsController_update_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Reservation UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateReservationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reservation updated successfully"
+          },
+          "400": {
+            "description": "Cannot update reservation"
+          },
+          "404": {
+            "description": "Reservation not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update reservation",
+        "tags": [
+          "Reservations"
+        ]
+      },
+      "delete": {
+        "operationId": "ReservationsController_remove_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Reservation UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reservation deleted successfully"
+          },
+          "404": {
+            "description": "Reservation not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete reservation (soft delete)",
+        "tags": [
+          "Reservations"
+        ]
+      }
+    },
+    "/api/v1/v1/reservations/{id}/confirm": {
+      "post": {
+        "operationId": "ReservationsController_confirm_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Reservation UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reservation confirmed"
+          },
+          "400": {
+            "description": "Cannot confirm reservation"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Confirm reservation",
+        "tags": [
+          "Reservations"
+        ]
+      }
+    },
+    "/api/v1/v1/reservations/{id}/check-in": {
+      "post": {
+        "operationId": "ReservationsController_checkIn_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Reservation UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckInDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Check-in completed"
+          },
+          "400": {
+            "description": "Cannot check in"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Check-in guest",
+        "tags": [
+          "Reservations"
+        ]
+      }
+    },
+    "/api/v1/v1/reservations/{id}/check-out": {
+      "post": {
+        "operationId": "ReservationsController_checkOut_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Reservation UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckOutDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Check-out completed"
+          },
+          "400": {
+            "description": "Cannot check out"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Check-out guest",
+        "tags": [
+          "Reservations"
+        ]
+      }
+    },
+    "/api/v1/v1/reservations/{id}/cancel": {
+      "post": {
+        "operationId": "ReservationsController_cancel_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Reservation UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reservation cancelled"
+          },
+          "400": {
+            "description": "Cannot cancel reservation"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cancel reservation",
+        "tags": [
+          "Reservations"
+        ]
+      }
+    },
+    "/api/v1/v1/reservations/{id}/no-show": {
+      "post": {
+        "operationId": "ReservationsController_markNoShow_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Reservation UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reservation marked as no-show"
+          },
+          "400": {
+            "description": "Cannot mark as no-show"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Mark reservation as no-show",
+        "tags": [
+          "Reservations"
+        ]
+      }
+    },
+    "/api/v1/v1/services": {
+      "post": {
+        "operationId": "ServicesController_create_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateServiceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Service created successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new service",
+        "tags": [
+          "Additional Services"
+        ]
+      },
+      "get": {
+        "operationId": "ServicesController_findAll_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": {
+              "default": "desc",
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "description": "Filter by category",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "RESTAURANT",
+                "SPA",
+                "TRANSPORT",
+                "LAUNDRY",
+                "ROOM_SERVICE",
+                "OTHER"
+              ]
+            }
+          },
+          {
+            "name": "active",
+            "required": false,
+            "in": "query",
+            "description": "Filter by active status",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of services"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all services with pagination and filters",
+        "tags": [
+          "Additional Services"
+        ]
+      }
+    },
+    "/api/v1/v1/services/category/{category}": {
+      "get": {
+        "operationId": "ServicesController_getByCategory_v1",
+        "parameters": [
+          {
+            "name": "category",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "enum": [
+                "RESTAURANT",
+                "SPA",
+                "TRANSPORT",
+                "LAUNDRY",
+                "ROOM_SERVICE",
+                "OTHER"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Services in category"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get services by category",
+        "tags": [
+          "Additional Services"
+        ]
+      }
+    },
+    "/api/v1/v1/services/{id}": {
+      "get": {
+        "operationId": "ServicesController_findOne_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Service UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Service details"
+          },
+          "404": {
+            "description": "Service not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get service by ID",
+        "tags": [
+          "Additional Services"
+        ]
+      },
+      "patch": {
+        "operationId": "ServicesController_update_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Service UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateServiceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Service updated successfully"
+          },
+          "404": {
+            "description": "Service not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update service",
+        "tags": [
+          "Additional Services"
+        ]
+      },
+      "delete": {
+        "operationId": "ServicesController_remove_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Service UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Service deleted successfully"
+          },
+          "404": {
+            "description": "Service not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete service (soft delete)",
+        "tags": [
+          "Additional Services"
+        ]
+      }
+    },
+    "/api/v1/v1/services/reservation": {
+      "post": {
+        "operationId": "ServicesController_addToReservation_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddServiceToReservationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Service added to reservation"
+          },
+          "404": {
+            "description": "Reservation or service not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Add service to reservation",
+        "tags": [
+          "Additional Services"
+        ]
+      }
+    },
+    "/api/v1/v1/services/reservation/{id}": {
+      "delete": {
+        "operationId": "ServicesController_removeFromReservation_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Reservation service UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Service removed from reservation"
+          },
+          "404": {
+            "description": "Reservation service not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remove service from reservation",
+        "tags": [
+          "Additional Services"
+        ]
+      }
+    },
+    "/api/v1/v1/services/reservation/{reservationId}": {
+      "get": {
+        "operationId": "ServicesController_getReservationServices_v1",
+        "parameters": [
+          {
+            "name": "reservationId",
+            "required": true,
+            "in": "path",
+            "description": "Reservation UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reservation services"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get services for a reservation",
+        "tags": [
+          "Additional Services"
+        ]
+      }
+    },
+    "/api/v1/v1/housekeeping": {
+      "post": {
+        "operationId": "HousekeepingController_create_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCleaningTaskDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Task created successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Room or employee not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new cleaning task",
+        "tags": [
+          "Housekeeping"
+        ]
+      },
+      "get": {
+        "operationId": "HousekeepingController_findAll_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": {
+              "default": "desc",
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "IN_PROGRESS",
+                "COMPLETED"
+              ]
+            }
+          },
+          {
+            "name": "roomId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by room ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "employeeId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by employee ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateFrom",
+            "required": false,
+            "in": "query",
+            "description": "Filter by scheduled date from",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTo",
+            "required": false,
+            "in": "query",
+            "description": "Filter by scheduled date to",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of cleaning tasks"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all cleaning tasks with pagination and filters",
+        "tags": [
+          "Housekeeping"
+        ]
+      }
+    },
+    "/api/v1/v1/housekeeping/today": {
+      "get": {
+        "operationId": "HousekeepingController_getTodayTasks_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Today cleaning tasks"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get today cleaning tasks",
+        "tags": [
+          "Housekeeping"
+        ]
+      }
+    },
+    "/api/v1/v1/housekeeping/pending": {
+      "get": {
+        "operationId": "HousekeepingController_getPendingTasks_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Pending cleaning tasks"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get pending cleaning tasks",
+        "tags": [
+          "Housekeeping"
+        ]
+      }
+    },
+    "/api/v1/v1/housekeeping/my-tasks": {
+      "get": {
+        "operationId": "HousekeepingController_getMyTasks_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "My assigned tasks"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get my assigned tasks (Housekeeping only)",
+        "tags": [
+          "Housekeeping"
+        ]
+      }
+    },
+    "/api/v1/v1/housekeeping/room/{roomId}/history": {
+      "get": {
+        "operationId": "HousekeepingController_getRoomHistory_v1",
+        "parameters": [
+          {
+            "name": "roomId",
+            "required": true,
+            "in": "path",
+            "description": "Room UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Room cleaning history"
+          },
+          "404": {
+            "description": "Room not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get cleaning history for a room",
+        "tags": [
+          "Housekeeping"
+        ]
+      }
+    },
+    "/api/v1/v1/housekeeping/employee/{employeeId}/tasks": {
+      "get": {
+        "operationId": "HousekeepingController_getEmployeeTasks_v1",
+        "parameters": [
+          {
+            "name": "employeeId",
+            "required": true,
+            "in": "path",
+            "description": "Employee UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Employee assigned tasks"
+          },
+          "404": {
+            "description": "Employee not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get tasks assigned to an employee",
+        "tags": [
+          "Housekeeping"
+        ]
+      }
+    },
+    "/api/v1/v1/housekeeping/{id}": {
+      "get": {
+        "operationId": "HousekeepingController_findOne_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Task UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task details"
+          },
+          "404": {
+            "description": "Task not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get cleaning task by ID",
+        "tags": [
+          "Housekeeping"
+        ]
+      },
+      "patch": {
+        "operationId": "HousekeepingController_update_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Task UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCleaningTaskDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task updated successfully"
+          },
+          "404": {
+            "description": "Task not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update cleaning task",
+        "tags": [
+          "Housekeeping"
+        ]
+      },
+      "delete": {
+        "operationId": "HousekeepingController_remove_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Task UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task deleted successfully"
+          },
+          "404": {
+            "description": "Task not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete cleaning task",
+        "tags": [
+          "Housekeeping"
+        ]
+      }
+    },
+    "/api/v1/v1/housekeeping/{id}/assign": {
+      "patch": {
+        "operationId": "HousekeepingController_assignTask_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Task UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignTaskDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task assigned successfully"
+          },
+          "404": {
+            "description": "Task or employee not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Assign task to an employee",
+        "tags": [
+          "Housekeeping"
+        ]
+      }
+    },
+    "/api/v1/v1/housekeeping/{id}/start": {
+      "post": {
+        "operationId": "HousekeepingController_startTask_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Task UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task started"
+          },
+          "400": {
+            "description": "Cannot start task"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Start a cleaning task",
+        "tags": [
+          "Housekeeping"
+        ]
+      }
+    },
+    "/api/v1/v1/housekeeping/{id}/complete": {
+      "post": {
+        "operationId": "HousekeepingController_completeTask_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Task UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteTaskDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task completed - Room marked available"
+          },
+          "400": {
+            "description": "Cannot complete task"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Complete a cleaning task",
+        "tags": [
+          "Housekeeping"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Hotel Management API",
+    "description": "API for hotel management system",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "Employee authentication endpoints"
+    },
+    {
+      "name": "Employees",
+      "description": "Employee management endpoints"
+    },
+    {
+      "name": "Customers",
+      "description": "Customer management endpoints"
+    },
+    {
+      "name": "Rooms",
+      "description": "Room management endpoints"
+    },
+    {
+      "name": "Reservations",
+      "description": "Reservation management endpoints"
+    },
+    {
+      "name": "Additional Services",
+      "description": "Additional services endpoints"
+    },
+    {
+      "name": "Housekeeping",
+      "description": "Housekeeping task management endpoints"
+    }
+  ],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "JWT-auth": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "name": "JWT",
+        "description": "Enter JWT token",
+        "in": "header"
+      }
+    },
+    "schemas": {
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "admin@hotel.com",
+            "description": "Employee email"
+          },
+          "password": {
+            "type": "string",
+            "example": "Admin123!",
+            "description": "Employee password"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "RefreshTokenDto": {
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "type": "string",
+            "description": "Refresh token"
+          }
+        },
+        "required": [
+          "refreshToken"
+        ]
+      },
+      "CreateEmployeeDto": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "example": "John",
+            "description": "First name"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Doe",
+            "description": "Last name"
+          },
+          "email": {
+            "type": "string",
+            "example": "john.doe@hotel.com",
+            "description": "Email address"
+          },
+          "password": {
+            "type": "string",
+            "example": "SecurePass123!",
+            "description": "Password"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "MANAGER",
+              "RECEPTIONIST",
+              "HOUSEKEEPING"
+            ],
+            "default": "RECEPTIONIST",
+            "description": "Employee role"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE",
+              "ON_LEAVE",
+              "TERMINATED"
+            ],
+            "default": "ACTIVE",
+            "description": "Employee status"
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "password"
+        ]
+      },
+      "UpdateEmployeeDto": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "example": "John",
+            "description": "First name"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Doe",
+            "description": "Last name"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "MANAGER",
+              "RECEPTIONIST",
+              "HOUSEKEEPING"
+            ],
+            "default": "RECEPTIONIST",
+            "description": "Employee role"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE",
+              "ON_LEAVE",
+              "TERMINATED"
+            ],
+            "default": "ACTIVE",
+            "description": "Employee status"
+          },
+          "password": {
+            "type": "string",
+            "example": "NewSecurePass123!",
+            "description": "New password"
+          }
+        }
+      },
+      "ChangePasswordDto": {
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": "string",
+            "description": "Current password"
+          },
+          "newPassword": {
+            "type": "string",
+            "example": "NewSecurePass123!",
+            "description": "New password"
+          }
+        }
+      },
+      "CreateCustomerDto": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "example": "John",
+            "description": "First name"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Doe",
+            "description": "Last name"
+          },
+          "email": {
+            "type": "string",
+            "example": "john.doe@email.com",
+            "description": "Email address"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+1234567890",
+            "description": "Phone number"
+          },
+          "documentType": {
+            "type": "string",
+            "enum": [
+              "PASSPORT",
+              "NATIONAL_ID",
+              "DRIVERS_LICENSE",
+              "OTHER"
+            ],
+            "description": "Document type"
+          },
+          "documentNumber": {
+            "type": "string",
+            "example": "AB123456",
+            "description": "Document number"
+          },
+          "address": {
+            "type": "string",
+            "example": "123 Main St",
+            "description": "Address"
+          },
+          "nationality": {
+            "type": "string",
+            "example": "USA",
+            "description": "Nationality"
+          },
+          "birthDate": {
+            "type": "string",
+            "example": "1990-01-15",
+            "description": "Birth date"
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "documentType",
+          "documentNumber"
+        ]
+      },
+      "UpdateCustomerDto": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "example": "John",
+            "description": "First name"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Doe",
+            "description": "Last name"
+          },
+          "email": {
+            "type": "string",
+            "example": "john.doe@email.com",
+            "description": "Email address"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+1234567890",
+            "description": "Phone number"
+          },
+          "documentType": {
+            "type": "string",
+            "enum": [
+              "PASSPORT",
+              "NATIONAL_ID",
+              "DRIVERS_LICENSE",
+              "OTHER"
+            ],
+            "description": "Document type"
+          },
+          "documentNumber": {
+            "type": "string",
+            "example": "AB123456",
+            "description": "Document number"
+          },
+          "address": {
+            "type": "string",
+            "example": "123 Main St",
+            "description": "Address"
+          },
+          "nationality": {
+            "type": "string",
+            "example": "USA",
+            "description": "Nationality"
+          },
+          "birthDate": {
+            "type": "string",
+            "example": "1990-01-15",
+            "description": "Birth date"
+          }
+        }
+      },
+      "CreateRoomDto": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "string",
+            "example": "101",
+            "description": "Room number"
+          },
+          "floor": {
+            "type": "number",
+            "example": 1,
+            "description": "Floor number"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "SINGLE",
+              "DOUBLE",
+              "TWIN",
+              "SUITE",
+              "DELUXE",
+              "PRESIDENTIAL",
+              "FAMILY"
+            ],
+            "description": "Room type"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "AVAILABLE",
+              "OCCUPIED",
+              "RESERVED",
+              "CLEANING",
+              "MAINTENANCE",
+              "OUT_OF_SERVICE"
+            ],
+            "default": "AVAILABLE"
+          },
+          "pricePerNight": {
+            "type": "number",
+            "example": 150,
+            "description": "Price per night"
+          },
+          "capacity": {
+            "type": "number",
+            "example": 2,
+            "description": "Maximum capacity"
+          },
+          "description": {
+            "type": "string",
+            "example": "Cozy room with city view",
+            "description": "Description"
+          },
+          "images": {
+            "example": [
+              "https://example.com/room1.jpg"
+            ],
+            "description": "Room images URLs",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "amenities": {
+            "example": [
+              "WiFi",
+              "TV",
+              "Mini Bar",
+              "Air Conditioning"
+            ],
+            "description": "Room amenities",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "number",
+          "floor",
+          "type",
+          "pricePerNight",
+          "capacity"
+        ]
+      },
+      "UpdateRoomDto": {
+        "type": "object",
+        "properties": {
+          "floor": {
+            "type": "number",
+            "example": 1,
+            "description": "Floor number"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "SINGLE",
+              "DOUBLE",
+              "TWIN",
+              "SUITE",
+              "DELUXE",
+              "PRESIDENTIAL",
+              "FAMILY"
+            ],
+            "description": "Room type"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "AVAILABLE",
+              "OCCUPIED",
+              "RESERVED",
+              "CLEANING",
+              "MAINTENANCE",
+              "OUT_OF_SERVICE"
+            ],
+            "default": "AVAILABLE"
+          },
+          "pricePerNight": {
+            "type": "number",
+            "example": 150,
+            "description": "Price per night"
+          },
+          "capacity": {
+            "type": "number",
+            "example": 2,
+            "description": "Maximum capacity"
+          },
+          "description": {
+            "type": "string",
+            "example": "Cozy room with city view",
+            "description": "Description"
+          },
+          "images": {
+            "example": [
+              "https://example.com/room1.jpg"
+            ],
+            "description": "Room images URLs",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "amenities": {
+            "example": [
+              "WiFi",
+              "TV",
+              "Mini Bar",
+              "Air Conditioning"
+            ],
+            "description": "Room amenities",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateReservationDto": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "description": "Customer ID"
+          },
+          "roomId": {
+            "type": "string",
+            "description": "Room ID"
+          },
+          "checkInDate": {
+            "type": "string",
+            "example": "2024-12-01",
+            "description": "Check-in date"
+          },
+          "checkOutDate": {
+            "type": "string",
+            "example": "2024-12-05",
+            "description": "Check-out date"
+          },
+          "adults": {
+            "type": "number",
+            "example": 2,
+            "default": 1,
+            "description": "Number of adults"
+          },
+          "children": {
+            "type": "number",
+            "example": 0,
+            "default": 0,
+            "description": "Number of children"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Notes"
+          }
+        },
+        "required": [
+          "customerId",
+          "roomId",
+          "checkInDate",
+          "checkOutDate"
+        ]
+      },
+      "UpdateReservationDto": {
+        "type": "object",
+        "properties": {
+          "checkInDate": {
+            "type": "string",
+            "example": "2024-12-01",
+            "description": "Check-in date"
+          },
+          "checkOutDate": {
+            "type": "string",
+            "example": "2024-12-05",
+            "description": "Check-out date"
+          },
+          "adults": {
+            "type": "number",
+            "example": 2,
+            "default": 1,
+            "description": "Number of adults"
+          },
+          "children": {
+            "type": "number",
+            "example": 0,
+            "default": 0,
+            "description": "Number of children"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Notes"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "CONFIRMED",
+              "CHECKED_IN",
+              "CHECKED_OUT",
+              "CANCELLED",
+              "NO_SHOW"
+            ],
+            "description": "Reservation status"
+          }
+        }
+      },
+      "CheckInDto": {
+        "type": "object",
+        "properties": {
+          "notes": {
+            "type": "string",
+            "description": "Notes for check-in"
+          }
+        }
+      },
+      "CheckOutDto": {
+        "type": "object",
+        "properties": {
+          "notes": {
+            "type": "string",
+            "description": "Notes for check-out"
+          }
+        }
+      },
+      "CreateServiceDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Room Service Breakfast",
+            "description": "Service name"
+          },
+          "description": {
+            "type": "string",
+            "example": "Full breakfast delivered to your room"
+          },
+          "price": {
+            "type": "number",
+            "example": 25,
+            "description": "Service price"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "RESTAURANT",
+              "SPA",
+              "TRANSPORT",
+              "LAUNDRY",
+              "ROOM_SERVICE",
+              "OTHER"
+            ],
+            "description": "Service category"
+          },
+          "active": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether service is active"
+          }
+        },
+        "required": [
+          "name",
+          "price",
+          "category"
+        ]
+      },
+      "UpdateServiceDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Room Service Breakfast",
+            "description": "Service name"
+          },
+          "description": {
+            "type": "string",
+            "example": "Full breakfast delivered to your room"
+          },
+          "price": {
+            "type": "number",
+            "example": 25,
+            "description": "Service price"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "RESTAURANT",
+              "SPA",
+              "TRANSPORT",
+              "LAUNDRY",
+              "ROOM_SERVICE",
+              "OTHER"
+            ],
+            "description": "Service category"
+          },
+          "active": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether service is active"
+          }
+        }
+      },
+      "AddServiceToReservationDto": {
+        "type": "object",
+        "properties": {
+          "reservationId": {
+            "type": "string",
+            "description": "Reservation ID"
+          },
+          "serviceId": {
+            "type": "string",
+            "description": "Service ID"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 1,
+            "default": 1,
+            "description": "Quantity"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Notes"
+          }
+        },
+        "required": [
+          "reservationId",
+          "serviceId"
+        ]
+      },
+      "CreateCleaningTaskDto": {
+        "type": "object",
+        "properties": {
+          "roomId": {
+            "type": "string",
+            "description": "Room ID"
+          },
+          "employeeId": {
+            "type": "string",
+            "description": "Assigned employee ID"
+          },
+          "scheduledDate": {
+            "type": "string",
+            "example": "2024-12-01",
+            "description": "Scheduled date"
+          },
+          "priority": {
+            "type": "number",
+            "example": 1,
+            "default": 1,
+            "description": "Priority (1-5)"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Notes"
+          }
+        },
+        "required": [
+          "roomId",
+          "scheduledDate"
+        ]
+      },
+      "UpdateCleaningTaskDto": {
+        "type": "object",
+        "properties": {
+          "employeeId": {
+            "type": "string",
+            "description": "Assigned employee ID"
+          },
+          "scheduledDate": {
+            "type": "string",
+            "example": "2024-12-01",
+            "description": "Scheduled date"
+          },
+          "priority": {
+            "type": "number",
+            "example": 1,
+            "default": 1,
+            "description": "Priority (1-5)"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Notes"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "IN_PROGRESS",
+              "COMPLETED"
+            ],
+            "description": "Task status"
+          }
+        }
+      },
+      "AssignTaskDto": {
+        "type": "object",
+        "properties": {
+          "employeeId": {
+            "type": "string",
+            "description": "Employee ID to assign"
+          }
+        }
+      },
+      "CompleteTaskDto": {
+        "type": "object",
+        "properties": {
+          "notes": {
+            "type": "string",
+            "description": "Completion notes"
+          }
+        }
+      }
+    }
+  }
+}
