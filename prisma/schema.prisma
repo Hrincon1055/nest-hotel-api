@@ -1,13 +1,10 @@
-// Prisma Schema - Hotel Management System
-// Database-agnostic design with PostgreSQL as primary provider
-
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // ==================== ENUMS ====================
@@ -79,27 +76,21 @@ enum ServiceCategory {
 // ==================== MODELS ====================
 
 model Employee {
-  id        String         @id @default(uuid())
-  firstName String         @map("first_name")
-  lastName  String         @map("last_name")
-  email     String         @unique
-  password  String
-  role      EmployeeRole   @default(RECEPTIONIST)
-  status    EmployeeStatus @default(ACTIVE)
-
-  // Refresh tokens for JWT
-  refreshTokens RefreshToken[]
-
-  // Relations
+  id                  String         @id @default(uuid())
+  firstName           String         @map("first_name")
+  lastName            String         @map("last_name")
+  email               String         @unique
+  password            String
+  role                EmployeeRole   @default(RECEPTIONIST)
+  status              EmployeeStatus @default(ACTIVE)
+  refreshTokens       RefreshToken[]
   checkIns            CheckInOut[]   @relation("CheckInEmployee")
   checkOuts           CheckInOut[]   @relation("CheckOutEmployee")
   cleaningTasks       CleaningTask[]
   createdReservations Reservation[]  @relation("CreatedByEmployee")
-
-  // Audit fields
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
+  createdAt           DateTime       @default(now()) @map("created_at")
+  updatedAt           DateTime       @updatedAt @map("updated_at")
+  deletedAt           DateTime?      @map("deleted_at")
 
   @@index([email])
   @@index([role])
@@ -122,24 +113,20 @@ model RefreshToken {
 }
 
 model Customer {
-  id             String       @id @default(uuid())
-  firstName      String       @map("first_name")
-  lastName       String       @map("last_name")
-  email          String       @unique
+  id             String        @id @default(uuid())
+  firstName      String        @map("first_name")
+  lastName       String        @map("last_name")
+  email          String        @unique
   phone          String?
-  documentType   DocumentType @default(NATIONAL_ID) @map("document_type")
-  documentNumber String       @map("document_number")
+  documentType   DocumentType  @default(NATIONAL_ID) @map("document_type")
+  documentNumber String        @map("document_number")
   address        String?
   nationality    String?
-  birthDate      DateTime?    @map("birth_date")
-
-  // Relations
-  reservations Reservation[]
-
-  // Audit fields
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
+  birthDate      DateTime?     @map("birth_date")
+  reservations   Reservation[]
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+  deletedAt      DateTime?     @map("deleted_at")
 
   @@unique([documentType, documentNumber])
   @@index([email])
@@ -148,26 +135,22 @@ model Customer {
 }
 
 model Room {
-  id            String     @id @default(uuid())
-  number        String     @unique
+  id            String         @id @default(uuid())
+  number        String         @unique
   floor         Int
-  type          RoomType   @default(SINGLE)
-  status        RoomStatus @default(AVAILABLE)
-  pricePerNight Decimal    @map("price_per_night") @db.Decimal(10, 2)
-  capacity      Int        @default(2)
+  type          RoomType       @default(SINGLE)
+  status        RoomStatus     @default(AVAILABLE)
+  pricePerNight Decimal        @map("price_per_night") @db.Decimal(10, 2)
+  capacity      Int            @default(2)
   description   String?
-  images        String[]   @default([])
-  amenities     String[]   @default([])
-
-  // Relations
+  images        String[]       @default([])
+  amenities     String[]       @default([])
   reservations  Reservation[]
   cleaningTasks CleaningTask[]
   checkInOuts   CheckInOut[]
-
-  // Audit fields
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  deletedAt     DateTime?      @map("deleted_at")
 
   @@index([number])
   @@index([status])
@@ -177,32 +160,26 @@ model Room {
 }
 
 model Reservation {
-  id              String            @id @default(uuid())
-  reservationCode String            @unique @map("reservation_code")
-  customerId      String            @map("customer_id")
-  customer        Customer          @relation(fields: [customerId], references: [id])
-  roomId          String            @map("room_id")
-  room            Room              @relation(fields: [roomId], references: [id])
-  checkInDate     DateTime          @map("check_in_date")
-  checkOutDate    DateTime          @map("check_out_date")
-  adults          Int               @default(1)
-  children        Int               @default(0)
-  totalAmount     Decimal           @map("total_amount") @db.Decimal(10, 2)
-  status          ReservationStatus @default(PENDING)
-  notes           String?
-
-  // Employee who created the reservation
-  createdById String?   @map("created_by_id")
-  createdBy   Employee? @relation("CreatedByEmployee", fields: [createdById], references: [id])
-
-  // Relations
+  id                  String               @id @default(uuid())
+  reservationCode     String               @unique @map("reservation_code")
+  customerId          String               @map("customer_id")
+  customer            Customer             @relation(fields: [customerId], references: [id])
+  roomId              String               @map("room_id")
+  room                Room                 @relation(fields: [roomId], references: [id])
+  checkInDate         DateTime             @map("check_in_date")
+  checkOutDate        DateTime             @map("check_out_date")
+  adults              Int                  @default(1)
+  children            Int                  @default(0)
+  totalAmount         Decimal              @map("total_amount") @db.Decimal(10, 2)
+  status              ReservationStatus    @default(PENDING)
+  notes               String?
+  createdById         String?              @map("created_by_id")
+  createdBy           Employee?            @relation("CreatedByEmployee", fields: [createdById], references: [id])
   checkInOut          CheckInOut?
   reservationServices ReservationService[]
-
-  // Audit fields
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
+  deletedAt           DateTime?            @map("deleted_at")
 
   @@index([reservationCode])
   @@index([customerId])
@@ -213,20 +190,16 @@ model Reservation {
 }
 
 model AdditionalService {
-  id          String          @id @default(uuid())
-  name        String
-  description String?
-  price       Decimal         @db.Decimal(10, 2)
-  category    ServiceCategory @default(OTHER)
-  active      Boolean         @default(true)
-
-  // Relations
+  id                  String               @id @default(uuid())
+  name                String
+  description         String?
+  price               Decimal              @db.Decimal(10, 2)
+  category            ServiceCategory      @default(OTHER)
+  active              Boolean              @default(true)
   reservationServices ReservationService[]
-
-  // Audit fields
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
+  deletedAt           DateTime?            @map("deleted_at")
 
   @@index([category])
   @@index([active])
@@ -244,9 +217,7 @@ model ReservationService {
   totalPrice    Decimal           @map("total_price") @db.Decimal(10, 2)
   notes         String?
   serviceDate   DateTime          @default(now()) @map("service_date")
-
-  // Audit fields
-  createdAt DateTime @default(now()) @map("created_at")
+  createdAt     DateTime          @default(now()) @map("created_at")
 
   @@index([reservationId])
   @@index([serviceId])
@@ -254,27 +225,20 @@ model ReservationService {
 }
 
 model CheckInOut {
-  id            String      @id @default(uuid())
-  reservationId String      @unique @map("reservation_id")
-  reservation   Reservation @relation(fields: [reservationId], references: [id])
-  roomId        String      @map("room_id")
-  room          Room        @relation(fields: [roomId], references: [id])
-
-  // Check-in details
-  checkInTime       DateTime? @map("check_in_time")
-  checkInEmployeeId String?   @map("check_in_employee_id")
-  checkInEmployee   Employee? @relation("CheckInEmployee", fields: [checkInEmployeeId], references: [id])
-
-  // Check-out details
-  checkOutTime       DateTime? @map("check_out_time")
-  checkOutEmployeeId String?   @map("check_out_employee_id")
-  checkOutEmployee   Employee? @relation("CheckOutEmployee", fields: [checkOutEmployeeId], references: [id])
-
-  notes String?
-
-  // Audit fields
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id                 String      @id @default(uuid())
+  reservationId      String      @unique @map("reservation_id")
+  reservation        Reservation @relation(fields: [reservationId], references: [id])
+  roomId             String      @map("room_id")
+  room               Room        @relation(fields: [roomId], references: [id])
+  checkInTime        DateTime?   @map("check_in_time")
+  checkInEmployeeId  String?     @map("check_in_employee_id")
+  checkInEmployee    Employee?   @relation("CheckInEmployee", fields: [checkInEmployeeId], references: [id])
+  checkOutTime       DateTime?   @map("check_out_time")
+  checkOutEmployeeId String?     @map("check_out_employee_id")
+  checkOutEmployee   Employee?   @relation("CheckOutEmployee", fields: [checkOutEmployeeId], references: [id])
+  notes              String?
+  createdAt          DateTime    @default(now()) @map("created_at")
+  updatedAt          DateTime    @updatedAt @map("updated_at")
 
   @@index([reservationId])
   @@index([roomId])
@@ -292,10 +256,8 @@ model CleaningTask {
   completedDate DateTime?      @map("completed_date")
   notes         String?
   priority      Int            @default(1)
-
-  // Audit fields
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
 
   @@index([roomId])
   @@index([employeeId])
@@ -304,12 +266,11 @@ model CleaningTask {
   @@map("cleaning_tasks")
 }
 
-// Audit Log for tracking changes
 model AuditLog {
   id         String   @id @default(uuid())
   tableName  String   @map("table_name")
   recordId   String   @map("record_id")
-  action     String // CREATE, UPDATE, DELETE
+  action     String
   oldValues  Json?    @map("old_values")
   newValues  Json?    @map("new_values")
   employeeId String?  @map("employee_id")

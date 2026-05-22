@@ -70,8 +70,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       error = 'Validation Error';
     }
     // Handle other errors
-    else if (exception instanceof Error) {
-      message = exception.message;
+    else if ((exception as unknown) instanceof Error) {
+      message = (exception as Error).message;
     }
 
     // Log the error

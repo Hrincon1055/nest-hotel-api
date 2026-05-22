@@ -1,3 +1,4 @@
+import { PrismaPg } from '@prisma/adapter-pg';
 import {
   DocumentType,
   EmployeeRole,
@@ -7,20 +8,20 @@ import {
   ServiceCategory,
 } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { Pool } from 'pg';
 
-const prisma = new PrismaClient();
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  console.log('🌱 Starting seed...');
-
-  // Create admin employee
   const adminPassword = await bcrypt.hash('Admin123!', 12);
   const managerPassword = await bcrypt.hash('Manager123!', 12);
   const receptionistPassword = await bcrypt.hash('Reception123!', 12);
   const housekeepingPassword = await bcrypt.hash('Housekeeping123!', 12);
-
-  // Employees
-  const admin = await prisma.employee.upsert({
+  await prisma.employee.upsert({
     where: { email: 'admin@hotel.com' },
     update: {},
     create: {
@@ -32,9 +33,8 @@ async function main() {
       status: 'ACTIVE',
     },
   });
-  console.log('✅ Admin created:', admin.email);
 
-  const manager = await prisma.employee.upsert({
+  await prisma.employee.upsert({
     where: { email: 'manager@hotel.com' },
     update: {},
     create: {
@@ -46,9 +46,7 @@ async function main() {
       status: 'ACTIVE',
     },
   });
-  console.log('✅ Manager created:', manager.email);
-
-  const receptionist = await prisma.employee.upsert({
+  await prisma.employee.upsert({
     where: { email: 'reception@hotel.com' },
     update: {},
     create: {
@@ -60,9 +58,7 @@ async function main() {
       status: 'ACTIVE',
     },
   });
-  console.log('✅ Receptionist created:', receptionist.email);
-
-  const housekeeper = await prisma.employee.upsert({
+  await prisma.employee.upsert({
     where: { email: 'housekeeping@hotel.com' },
     update: {},
     create: {
@@ -74,11 +70,8 @@ async function main() {
       status: 'ACTIVE',
     },
   });
-  console.log('✅ Housekeeping created:', housekeeper.email);
 
-  // Rooms
   const roomsData = [
-    // First Floor - Single Rooms
     {
       number: '101',
       floor: 1,
@@ -115,8 +108,6 @@ async function main() {
       description: 'Double room with garden view',
       amenities: ['WiFi', 'TV', 'Air Conditioning', 'Mini Bar'],
     },
-
-    // Second Floor - Twin and Double
     {
       number: '201',
       floor: 2,
@@ -160,8 +151,6 @@ async function main() {
         'Balcony',
       ],
     },
-
-    // Third Floor - Family and Deluxe
     {
       number: '301',
       floor: 3,
@@ -227,8 +216,6 @@ async function main() {
         'Panoramic View',
       ],
     },
-
-    // Fourth Floor - Suites
     {
       number: '401',
       floor: 4,
@@ -265,8 +252,6 @@ async function main() {
         'Meeting Table',
       ],
     },
-
-    // Fifth Floor - Presidential
     {
       number: '501',
       floor: 5,
@@ -289,7 +274,7 @@ async function main() {
   ];
 
   for (const roomData of roomsData) {
-    const room = await prisma.room.upsert({
+    await prisma.room.upsert({
       where: { number: roomData.number },
       update: {},
       create: {
@@ -298,12 +283,9 @@ async function main() {
         images: [],
       },
     });
-    console.log(`✅ Room created: ${room.number}`);
   }
 
-  // Additional Services
   const servicesData = [
-    // Restaurant
     {
       name: 'Breakfast Buffet',
       description: 'Full breakfast buffet with international options',
@@ -328,8 +310,6 @@ async function main() {
       price: 15,
       category: ServiceCategory.ROOM_SERVICE,
     },
-
-    // Spa
     {
       name: 'Relaxing Massage',
       description: '60-minute full body massage',
@@ -348,8 +328,6 @@ async function main() {
       price: 200,
       category: ServiceCategory.SPA,
     },
-
-    // Transport
     {
       name: 'Airport Transfer',
       description: 'Private car to/from airport',
@@ -368,8 +346,6 @@ async function main() {
       price: 100,
       category: ServiceCategory.TRANSPORT,
     },
-
-    // Laundry
     {
       name: 'Express Laundry',
       description: 'Same-day laundry service',
@@ -388,8 +364,6 @@ async function main() {
       price: 5,
       category: ServiceCategory.LAUNDRY,
     },
-
-    // Other
     {
       name: 'Late Checkout',
       description: 'Checkout until 4pm',
@@ -411,16 +385,14 @@ async function main() {
   ];
 
   for (const serviceData of servicesData) {
-    const service = await prisma.additionalService.create({
+    await prisma.additionalService.create({
       data: {
         ...serviceData,
         active: true,
       },
     });
-    console.log(`✅ Service created: ${service.name}`);
   }
 
-  // Sample Customers
   const customersData = [
     {
       firstName: 'Carlos',
@@ -458,20 +430,12 @@ async function main() {
   ];
 
   for (const customerData of customersData) {
-    const customer = await prisma.customer.upsert({
+    await prisma.customer.upsert({
       where: { email: customerData.email },
       update: {},
       create: customerData,
     });
-    console.log(`✅ Customer created: ${customer.email}`);
   }
-
-  console.log('\n🎉 Seed completed successfully!');
-  console.log('\n📝 Login Credentials:');
-  console.log('Admin: admin@hotel.com / Admin123!');
-  console.log('Manager: manager@hotel.com / Manager123!');
-  console.log('Receptionist: reception@hotel.com / Reception123!');
-  console.log('Housekeeping: housekeeping@hotel.com / Housekeeping123!');
 }
 
 main()
