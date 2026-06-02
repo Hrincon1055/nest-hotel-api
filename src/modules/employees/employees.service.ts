@@ -30,7 +30,6 @@ export class EmployeesService {
     const existingEmployee = await this.prisma.employee.findUnique({
       where: { email },
     });
-
     if (existingEmployee) {
       throw new ConflictException('Email already exists');
     }
@@ -141,7 +140,6 @@ export class EmployeesService {
         this.configService.get<number>('app.bcryptSaltRounds') ?? 12;
       data.password = await bcrypt.hash(password, saltRounds);
     }
-
     const employee = await this.prisma.employee.update({
       where: { id },
       data,
@@ -200,11 +198,12 @@ export class EmployeesService {
     const employee = await this.findOne(id);
     await this.prisma.employee.update({
       where: { id },
-      data: { deletedAt: new Date() },
+      data: { deletedAt: new Date(), status: 'INACTIVE' },
     });
     this.logger.log(`Employee soft deleted: ${employee.email}`);
     return { message: 'Employee deleted successfully' };
   }
+
   async restore(id: string) {
     const employee = await this.prisma.employee.findFirst({
       where: { id, deletedAt: { not: null } },
@@ -214,7 +213,7 @@ export class EmployeesService {
     }
     await this.prisma.employee.update({
       where: { id },
-      data: { deletedAt: null },
+      data: { deletedAt: null, status: 'ACTIVE' },
     });
     this.logger.log(`Employee restored: ${employee.email}`);
     return { message: 'Employee restored successfully' };

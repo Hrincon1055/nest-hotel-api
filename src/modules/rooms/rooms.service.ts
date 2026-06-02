@@ -5,7 +5,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { ReservationStatus, RoomStatus } from '@prisma/client';
+import { ReservationStatus, RoomStatus, RoomType } from '@prisma/client';
 import { PaginatedResponseDto } from '../../common/dto';
 import { PrismaService } from '../../database/prisma.service';
 import {
@@ -14,6 +14,87 @@ import {
   FilterRoomDto,
   UpdateRoomDto,
 } from './dto';
+
+// Mapeo de términos de búsqueda en español a valores de enum
+const ROOM_TYPE_SEARCH_MAP: Record<string, RoomType> = {
+  individual: RoomType.SINGLE,
+  single: RoomType.SINGLE,
+  doble: RoomType.DOUBLE,
+  double: RoomType.DOUBLE,
+  twin: RoomType.TWIN,
+  gemela: RoomType.TWIN,
+  suite: RoomType.SUITE,
+  deluxe: RoomType.DELUXE,
+  lujo: RoomType.DELUXE,
+  presidencial: RoomType.PRESIDENTIAL,
+  presidential: RoomType.PRESIDENTIAL,
+  familiar: RoomType.FAMILY,
+  family: RoomType.FAMILY,
+  familia: RoomType.FAMILY,
+};
+
+const ROOM_STATUS_SEARCH_MAP: Record<string, RoomStatus> = {
+  disponible: RoomStatus.AVAILABLE,
+  available: RoomStatus.AVAILABLE,
+  ocupada: RoomStatus.OCCUPIED,
+  ocupado: RoomStatus.OCCUPIED,
+  occupied: RoomStatus.OCCUPIED,
+  reservada: RoomStatus.RESERVED,
+  reservado: RoomStatus.RESERVED,
+  reserved: RoomStatus.RESERVED,
+  limpieza: RoomStatus.CLEANING,
+  cleaning: RoomStatus.CLEANING,
+  limpiando: RoomStatus.CLEANING,
+  mantenimiento: RoomStatus.MAINTENANCE,
+  maintenance: RoomStatus.MAINTENANCE,
+  'fuera de servicio': RoomStatus.OUT_OF_SERVICE,
+  'out of service': RoomStatus.OUT_OF_SERVICE,
+  inhabilitada: RoomStatus.OUT_OF_SERVICE,
+};
+
+// Función para buscar coincidencias parciales en tipos de habitación
+function findMatchingRoomTypes(searchTerm: string): RoomType[] {
+  const searchLower = searchTerm.toLowerCase();
+  const matchedTypes = new Set<RoomType>();
+
+  // Buscar en el mapeo (coincidencias parciales)
+  for (const [key, value] of Object.entries(ROOM_TYPE_SEARCH_MAP)) {
+    if (key.includes(searchLower) || searchLower.includes(key)) {
+      matchedTypes.add(value);
+    }
+  }
+
+  // Buscar directamente en los valores del enum
+  for (const enumValue of Object.values(RoomType)) {
+    if (enumValue.toLowerCase().includes(searchLower)) {
+      matchedTypes.add(enumValue);
+    }
+  }
+
+  return Array.from(matchedTypes);
+}
+
+// Función para buscar coincidencias parciales en estados
+function findMatchingRoomStatuses(searchTerm: string): RoomStatus[] {
+  const searchLower = searchTerm.toLowerCase();
+  const matchedStatuses = new Set<RoomStatus>();
+
+  // Buscar en el mapeo (coincidencias parciales)
+  for (const [key, value] of Object.entries(ROOM_STATUS_SEARCH_MAP)) {
+    if (key.includes(searchLower) || searchLower.includes(key)) {
+      matchedStatuses.add(value);
+    }
+  }
+
+  // Buscar directamente en los valores del enum
+  for (const enumValue of Object.values(RoomStatus)) {
+    if (enumValue.toLowerCase().includes(searchLower)) {
+      matchedStatuses.add(enumValue);
+    }
+  }
+
+  return Array.from(matchedStatuses);
+}
 
 @Injectable()
 export class RoomsService {
@@ -63,10 +144,25 @@ export class RoomsService {
       if (maxPrice !== undefined) where.pricePerNight.lte = maxPrice;
     }
     if (search) {
-      where.OR = [
+      const searchLower = search.toLowerCase().trim();
+      const orConditions: any[] = [
         { number: { contains: search, mode: 'insensitive' } },
         { description: { contains: search, mode: 'insensitive' } },
       ];
+
+      // Buscar coincidencias parciales en tipos de habitación
+      const matchedTypes = findMatchingRoomTypes(searchLower);
+      if (matchedTypes.length > 0) {
+        orConditions.push({ type: { in: matchedTypes } });
+      }
+
+      // Buscar coincidencias parciales en estados
+      const matchedStatuses = findMatchingRoomStatuses(searchLower);
+      if (matchedStatuses.length > 0) {
+        orConditions.push({ status: { in: matchedStatuses } });
+      }
+
+      where.OR = orConditions;
     }
     const [rooms, total] = await Promise.all([
       this.prisma.room.findMany({

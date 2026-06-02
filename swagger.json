@@ -1,9 +1,9 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/api/v1/v1/auth/login": {
+    "/api/v1/auth/login": {
       "post": {
-        "operationId": "AuthController_login_v1",
+        "operationId": "AuthController_login",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -46,9 +46,9 @@
         ]
       }
     },
-    "/api/v1/v1/auth/refresh": {
+    "/api/v1/auth/refresh": {
       "post": {
-        "operationId": "AuthController_refresh_v1",
+        "operationId": "AuthController_refresh",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -84,9 +84,9 @@
         ]
       }
     },
-    "/api/v1/v1/auth/logout": {
+    "/api/v1/auth/logout": {
       "post": {
-        "operationId": "AuthController_logout_v1",
+        "operationId": "AuthController_logout",
         "parameters": [],
         "responses": {
           "200": {
@@ -107,9 +107,9 @@
         ]
       }
     },
-    "/api/v1/v1/auth/me": {
+    "/api/v1/auth/me": {
       "post": {
-        "operationId": "AuthController_me_v1",
+        "operationId": "AuthController_me",
         "parameters": [],
         "responses": {
           "200": {
@@ -140,9 +140,9 @@
         ]
       }
     },
-    "/api/v1/v1/employees": {
+    "/api/v1/employees": {
       "post": {
-        "operationId": "EmployeesController_create_v1",
+        "operationId": "EmployeesController_create",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -176,7 +176,7 @@
         ]
       },
       "get": {
-        "operationId": "EmployeesController_findAll_v1",
+        "operationId": "EmployeesController_findAll",
         "parameters": [
           {
             "name": "page",
@@ -280,9 +280,9 @@
         ]
       }
     },
-    "/api/v1/v1/employees/{id}": {
+    "/api/v1/employees/{id}": {
       "get": {
-        "operationId": "EmployeesController_findOne_v1",
+        "operationId": "EmployeesController_findOne",
         "parameters": [
           {
             "name": "id",
@@ -313,7 +313,7 @@
         ]
       },
       "patch": {
-        "operationId": "EmployeesController_update_v1",
+        "operationId": "EmployeesController_update",
         "parameters": [
           {
             "name": "id",
@@ -354,7 +354,7 @@
         ]
       },
       "delete": {
-        "operationId": "EmployeesController_remove_v1",
+        "operationId": "EmployeesController_remove",
         "parameters": [
           {
             "name": "id",
@@ -385,9 +385,9 @@
         ]
       }
     },
-    "/api/v1/v1/employees/{id}/change-password": {
+    "/api/v1/employees/{id}/change-password": {
       "patch": {
-        "operationId": "EmployeesController_changePasswordAdmin_v1",
+        "operationId": "EmployeesController_changePasswordAdmin",
         "parameters": [
           {
             "name": "id",
@@ -428,9 +428,9 @@
         ]
       }
     },
-    "/api/v1/v1/employees/me/change-password": {
+    "/api/v1/employees/me/change-password": {
       "patch": {
-        "operationId": "EmployeesController_changeOwnPassword_v1",
+        "operationId": "EmployeesController_changeOwnPassword",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -461,9 +461,9 @@
         ]
       }
     },
-    "/api/v1/v1/employees/{id}/restore": {
+    "/api/v1/employees/{id}/restore": {
       "post": {
-        "operationId": "EmployeesController_restore_v1",
+        "operationId": "EmployeesController_restore",
         "parameters": [
           {
             "name": "id",
@@ -494,9 +494,9 @@
         ]
       }
     },
-    "/api/v1/v1/customers": {
+    "/api/v1/customers": {
       "post": {
-        "operationId": "CustomersController_create_v1",
+        "operationId": "CustomersController_create",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -530,7 +530,7 @@
         ]
       },
       "get": {
-        "operationId": "CustomersController_findAll_v1",
+        "operationId": "CustomersController_findAll",
         "parameters": [
           {
             "name": "page",
@@ -628,9 +628,9 @@
         ]
       }
     },
-    "/api/v1/v1/customers/{id}": {
+    "/api/v1/customers/{id}": {
       "get": {
-        "operationId": "CustomersController_findOne_v1",
+        "operationId": "CustomersController_findOne",
         "parameters": [
           {
             "name": "id",
@@ -661,7 +661,7 @@
         ]
       },
       "patch": {
-        "operationId": "CustomersController_update_v1",
+        "operationId": "CustomersController_update",
         "parameters": [
           {
             "name": "id",
@@ -702,7 +702,7 @@
         ]
       },
       "delete": {
-        "operationId": "CustomersController_remove_v1",
+        "operationId": "CustomersController_remove",
         "parameters": [
           {
             "name": "id",
@@ -733,9 +733,9 @@
         ]
       }
     },
-    "/api/v1/v1/customers/{id}/reservations": {
+    "/api/v1/customers/{id}/reservations": {
       "get": {
-        "operationId": "CustomersController_getReservationHistory_v1",
+        "operationId": "CustomersController_getReservationHistory",
         "parameters": [
           {
             "name": "id",
@@ -766,9 +766,9 @@
         ]
       }
     },
-    "/api/v1/v1/customers/{id}/restore": {
+    "/api/v1/customers/{id}/restore": {
       "post": {
-        "operationId": "CustomersController_restore_v1",
+        "operationId": "CustomersController_restore",
         "parameters": [
           {
             "name": "id",
@@ -799,9 +799,9 @@
         ]
       }
     },
-    "/api/v1/v1/rooms": {
+    "/api/v1/rooms": {
       "post": {
-        "operationId": "RoomsController_create_v1",
+        "operationId": "RoomsController_create",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -835,7 +835,7 @@
         ]
       },
       "get": {
-        "operationId": "RoomsController_findAll_v1",
+        "operationId": "RoomsController_findAll",
         "parameters": [
           {
             "name": "page",
@@ -980,9 +980,9 @@
         ]
       }
     },
-    "/api/v1/v1/rooms/stats": {
+    "/api/v1/rooms/stats": {
       "get": {
-        "operationId": "RoomsController_getStats_v1",
+        "operationId": "RoomsController_getStats",
         "parameters": [],
         "responses": {
           "200": {
@@ -1000,9 +1000,9 @@
         ]
       }
     },
-    "/api/v1/v1/rooms/availability": {
+    "/api/v1/rooms/availability": {
       "get": {
-        "operationId": "RoomsController_checkAvailability_v1",
+        "operationId": "RoomsController_checkAvailability",
         "parameters": [
           {
             "name": "checkInDate",
@@ -1068,9 +1068,9 @@
         ]
       }
     },
-    "/api/v1/v1/rooms/{id}": {
+    "/api/v1/rooms/{id}": {
       "get": {
-        "operationId": "RoomsController_findOne_v1",
+        "operationId": "RoomsController_findOne",
         "parameters": [
           {
             "name": "id",
@@ -1101,7 +1101,7 @@
         ]
       },
       "patch": {
-        "operationId": "RoomsController_update_v1",
+        "operationId": "RoomsController_update",
         "parameters": [
           {
             "name": "id",
@@ -1142,7 +1142,7 @@
         ]
       },
       "delete": {
-        "operationId": "RoomsController_remove_v1",
+        "operationId": "RoomsController_remove",
         "parameters": [
           {
             "name": "id",
@@ -1176,9 +1176,9 @@
         ]
       }
     },
-    "/api/v1/v1/rooms/{id}/status": {
+    "/api/v1/rooms/{id}/status": {
       "patch": {
-        "operationId": "RoomsController_updateStatus_v1",
+        "operationId": "RoomsController_updateStatus",
         "parameters": [
           {
             "name": "id",
@@ -1209,9 +1209,9 @@
         ]
       }
     },
-    "/api/v1/v1/rooms/{id}/restore": {
+    "/api/v1/rooms/{id}/restore": {
       "post": {
-        "operationId": "RoomsController_restore_v1",
+        "operationId": "RoomsController_restore",
         "parameters": [
           {
             "name": "id",
@@ -1242,9 +1242,9 @@
         ]
       }
     },
-    "/api/v1/v1/reservations": {
+    "/api/v1/reservations": {
       "post": {
-        "operationId": "ReservationsController_create_v1",
+        "operationId": "ReservationsController_create",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1281,7 +1281,7 @@
         ]
       },
       "get": {
-        "operationId": "ReservationsController_findAll_v1",
+        "operationId": "ReservationsController_findAll",
         "parameters": [
           {
             "name": "page",
@@ -1426,9 +1426,9 @@
         ]
       }
     },
-    "/api/v1/v1/reservations/today/arrivals": {
+    "/api/v1/reservations/today/arrivals": {
       "get": {
-        "operationId": "ReservationsController_getTodayArrivals_v1",
+        "operationId": "ReservationsController_getTodayArrivals",
         "parameters": [],
         "responses": {
           "200": {
@@ -1446,9 +1446,9 @@
         ]
       }
     },
-    "/api/v1/v1/reservations/today/departures": {
+    "/api/v1/reservations/today/departures": {
       "get": {
-        "operationId": "ReservationsController_getTodayDepartures_v1",
+        "operationId": "ReservationsController_getTodayDepartures",
         "parameters": [],
         "responses": {
           "200": {
@@ -1466,9 +1466,9 @@
         ]
       }
     },
-    "/api/v1/v1/reservations/code/{code}": {
+    "/api/v1/reservations/code/{code}": {
       "get": {
-        "operationId": "ReservationsController_findByCode_v1",
+        "operationId": "ReservationsController_findByCode",
         "parameters": [
           {
             "name": "code",
@@ -1499,9 +1499,9 @@
         ]
       }
     },
-    "/api/v1/v1/reservations/{id}": {
+    "/api/v1/reservations/{id}": {
       "get": {
-        "operationId": "ReservationsController_findOne_v1",
+        "operationId": "ReservationsController_findOne",
         "parameters": [
           {
             "name": "id",
@@ -1532,7 +1532,7 @@
         ]
       },
       "patch": {
-        "operationId": "ReservationsController_update_v1",
+        "operationId": "ReservationsController_update",
         "parameters": [
           {
             "name": "id",
@@ -1576,7 +1576,7 @@
         ]
       },
       "delete": {
-        "operationId": "ReservationsController_remove_v1",
+        "operationId": "ReservationsController_remove",
         "parameters": [
           {
             "name": "id",
@@ -1607,9 +1607,9 @@
         ]
       }
     },
-    "/api/v1/v1/reservations/{id}/confirm": {
+    "/api/v1/reservations/{id}/confirm": {
       "post": {
-        "operationId": "ReservationsController_confirm_v1",
+        "operationId": "ReservationsController_confirm",
         "parameters": [
           {
             "name": "id",
@@ -1640,9 +1640,9 @@
         ]
       }
     },
-    "/api/v1/v1/reservations/{id}/check-in": {
+    "/api/v1/reservations/{id}/check-in": {
       "post": {
-        "operationId": "ReservationsController_checkIn_v1",
+        "operationId": "ReservationsController_checkIn",
         "parameters": [
           {
             "name": "id",
@@ -1683,9 +1683,9 @@
         ]
       }
     },
-    "/api/v1/v1/reservations/{id}/check-out": {
+    "/api/v1/reservations/{id}/check-out": {
       "post": {
-        "operationId": "ReservationsController_checkOut_v1",
+        "operationId": "ReservationsController_checkOut",
         "parameters": [
           {
             "name": "id",
@@ -1726,9 +1726,9 @@
         ]
       }
     },
-    "/api/v1/v1/reservations/{id}/cancel": {
+    "/api/v1/reservations/{id}/cancel": {
       "post": {
-        "operationId": "ReservationsController_cancel_v1",
+        "operationId": "ReservationsController_cancel",
         "parameters": [
           {
             "name": "id",
@@ -1759,9 +1759,9 @@
         ]
       }
     },
-    "/api/v1/v1/reservations/{id}/no-show": {
+    "/api/v1/reservations/{id}/no-show": {
       "post": {
-        "operationId": "ReservationsController_markNoShow_v1",
+        "operationId": "ReservationsController_markNoShow",
         "parameters": [
           {
             "name": "id",
@@ -1792,9 +1792,9 @@
         ]
       }
     },
-    "/api/v1/v1/services": {
+    "/api/v1/services": {
       "post": {
-        "operationId": "ServicesController_create_v1",
+        "operationId": "ServicesController_create",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1825,7 +1825,7 @@
         ]
       },
       "get": {
-        "operationId": "ServicesController_findAll_v1",
+        "operationId": "ServicesController_findAll",
         "parameters": [
           {
             "name": "page",
@@ -1925,9 +1925,9 @@
         ]
       }
     },
-    "/api/v1/v1/services/category/{category}": {
+    "/api/v1/services/category/{category}": {
       "get": {
-        "operationId": "ServicesController_getByCategory_v1",
+        "operationId": "ServicesController_getByCategory",
         "parameters": [
           {
             "name": "category",
@@ -1962,9 +1962,9 @@
         ]
       }
     },
-    "/api/v1/v1/services/{id}": {
+    "/api/v1/services/{id}": {
       "get": {
-        "operationId": "ServicesController_findOne_v1",
+        "operationId": "ServicesController_findOne",
         "parameters": [
           {
             "name": "id",
@@ -1995,7 +1995,7 @@
         ]
       },
       "patch": {
-        "operationId": "ServicesController_update_v1",
+        "operationId": "ServicesController_update",
         "parameters": [
           {
             "name": "id",
@@ -2036,7 +2036,7 @@
         ]
       },
       "delete": {
-        "operationId": "ServicesController_remove_v1",
+        "operationId": "ServicesController_remove",
         "parameters": [
           {
             "name": "id",
@@ -2067,9 +2067,9 @@
         ]
       }
     },
-    "/api/v1/v1/services/reservation": {
+    "/api/v1/services/reservation": {
       "post": {
-        "operationId": "ServicesController_addToReservation_v1",
+        "operationId": "ServicesController_addToReservation",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -2100,9 +2100,9 @@
         ]
       }
     },
-    "/api/v1/v1/services/reservation/{id}": {
+    "/api/v1/services/reservation/{id}": {
       "delete": {
-        "operationId": "ServicesController_removeFromReservation_v1",
+        "operationId": "ServicesController_removeFromReservation",
         "parameters": [
           {
             "name": "id",
@@ -2133,9 +2133,9 @@
         ]
       }
     },
-    "/api/v1/v1/services/reservation/{reservationId}": {
+    "/api/v1/services/reservation/{reservationId}": {
       "get": {
-        "operationId": "ServicesController_getReservationServices_v1",
+        "operationId": "ServicesController_getReservationServices",
         "parameters": [
           {
             "name": "reservationId",
@@ -2163,9 +2163,9 @@
         ]
       }
     },
-    "/api/v1/v1/housekeeping": {
+    "/api/v1/housekeeping": {
       "post": {
-        "operationId": "HousekeepingController_create_v1",
+        "operationId": "HousekeepingController_create",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -2199,7 +2199,7 @@
         ]
       },
       "get": {
-        "operationId": "HousekeepingController_findAll_v1",
+        "operationId": "HousekeepingController_findAll",
         "parameters": [
           {
             "name": "page",
@@ -2323,9 +2323,9 @@
         ]
       }
     },
-    "/api/v1/v1/housekeeping/today": {
+    "/api/v1/housekeeping/today": {
       "get": {
-        "operationId": "HousekeepingController_getTodayTasks_v1",
+        "operationId": "HousekeepingController_getTodayTasks",
         "parameters": [],
         "responses": {
           "200": {
@@ -2343,9 +2343,9 @@
         ]
       }
     },
-    "/api/v1/v1/housekeeping/pending": {
+    "/api/v1/housekeeping/pending": {
       "get": {
-        "operationId": "HousekeepingController_getPendingTasks_v1",
+        "operationId": "HousekeepingController_getPendingTasks",
         "parameters": [],
         "responses": {
           "200": {
@@ -2363,9 +2363,9 @@
         ]
       }
     },
-    "/api/v1/v1/housekeeping/my-tasks": {
+    "/api/v1/housekeeping/my-tasks": {
       "get": {
-        "operationId": "HousekeepingController_getMyTasks_v1",
+        "operationId": "HousekeepingController_getMyTasks",
         "parameters": [],
         "responses": {
           "200": {
@@ -2383,9 +2383,9 @@
         ]
       }
     },
-    "/api/v1/v1/housekeeping/room/{roomId}/history": {
+    "/api/v1/housekeeping/room/{roomId}/history": {
       "get": {
-        "operationId": "HousekeepingController_getRoomHistory_v1",
+        "operationId": "HousekeepingController_getRoomHistory",
         "parameters": [
           {
             "name": "roomId",
@@ -2416,9 +2416,9 @@
         ]
       }
     },
-    "/api/v1/v1/housekeeping/employee/{employeeId}/tasks": {
+    "/api/v1/housekeeping/employee/{employeeId}/tasks": {
       "get": {
-        "operationId": "HousekeepingController_getEmployeeTasks_v1",
+        "operationId": "HousekeepingController_getEmployeeTasks",
         "parameters": [
           {
             "name": "employeeId",
@@ -2449,9 +2449,9 @@
         ]
       }
     },
-    "/api/v1/v1/housekeeping/{id}": {
+    "/api/v1/housekeeping/{id}": {
       "get": {
-        "operationId": "HousekeepingController_findOne_v1",
+        "operationId": "HousekeepingController_findOne",
         "parameters": [
           {
             "name": "id",
@@ -2482,7 +2482,7 @@
         ]
       },
       "patch": {
-        "operationId": "HousekeepingController_update_v1",
+        "operationId": "HousekeepingController_update",
         "parameters": [
           {
             "name": "id",
@@ -2523,7 +2523,7 @@
         ]
       },
       "delete": {
-        "operationId": "HousekeepingController_remove_v1",
+        "operationId": "HousekeepingController_remove",
         "parameters": [
           {
             "name": "id",
@@ -2554,9 +2554,9 @@
         ]
       }
     },
-    "/api/v1/v1/housekeeping/{id}/assign": {
+    "/api/v1/housekeeping/{id}/assign": {
       "patch": {
-        "operationId": "HousekeepingController_assignTask_v1",
+        "operationId": "HousekeepingController_assignTask",
         "parameters": [
           {
             "name": "id",
@@ -2597,9 +2597,9 @@
         ]
       }
     },
-    "/api/v1/v1/housekeeping/{id}/start": {
+    "/api/v1/housekeeping/{id}/start": {
       "post": {
-        "operationId": "HousekeepingController_startTask_v1",
+        "operationId": "HousekeepingController_startTask",
         "parameters": [
           {
             "name": "id",
@@ -2630,9 +2630,9 @@
         ]
       }
     },
-    "/api/v1/v1/housekeeping/{id}/complete": {
+    "/api/v1/housekeeping/{id}/complete": {
       "post": {
-        "operationId": "HousekeepingController_completeTask_v1",
+        "operationId": "HousekeepingController_completeTask",
         "parameters": [
           {
             "name": "id",

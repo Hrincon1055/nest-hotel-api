@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import {
   Injectable,
   Logger,
@@ -27,8 +30,6 @@ export class PrismaService
   async onModuleInit() {
     await this.$connect();
     this.logger.log('Prisma connected to database');
-
-    // Enable query logging in development
     if (process.env.NODE_ENV === 'development') {
       this.$on('query' as never, (e: any) => {
         this.logger.debug(`Query: ${e.query}`);
