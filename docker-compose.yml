@@ -1,6 +1,7 @@
-version: '3.8'
-
 services:
+  # =============================================
+  # Base de Datos PostgreSQL
+  # =============================================
   postgres:
     image: postgres:16-alpine
     container_name: hotel_postgres
@@ -15,13 +16,20 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./docker/postgres/init:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER:-hotel_admin} -d ${DB_NAME:-hotel_management}']
+      test:
+        [
+          'CMD-SHELL',
+          'pg_isready -U ${DB_USER:-hotel_admin} -d ${DB_NAME:-hotel_management}',
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
       - hotel_network
 
+  # =============================================
+  # pgAdmin - Administración de PostgreSQL
+  # =============================================
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: hotel_pgadmin
@@ -38,6 +46,62 @@ services:
         condition: service_healthy
     networks:
       - hotel_network
+
+  # =============================================
+  # API Backend - NestJS
+  # =============================================
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hotel_api
+    restart: unless-stopped
+    ports:
+      - '${API_PORT:-3000}:3000'
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      # Base de datos
+      DATABASE_URL: postgresql://${DB_USER:-hotel_admin}:${DB_PASSWORD:-hotel_secret_2024}@postgres:5432/${DB_NAME:-hotel_management}?schema=public
+      # JWT
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1d}
+      JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN:-7d}
+      # CORS - permitir acceso desde nginx
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost,http://localhost:80}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:3000/api/docs']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - hotel_network
+
+  # =============================================
+  # Frontend - Vue.js + Nginx (Reverse Proxy incluido)
+  # Sirve el frontend y hace proxy a la API
+  # =============================================
+  frontend:
+    build:
+      context: ../vue-hotel
+      dockerfile: Dockerfile
+    container_name: hotel_frontend
+    restart: unless-stopped
+    ports:
+      - '${APP_PORT:-80}:80'
+    depends_on:
+      - api
+    networks:
+      - hotel_network
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
   postgres_data:

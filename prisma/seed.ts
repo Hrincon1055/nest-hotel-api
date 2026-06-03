@@ -385,6 +385,25 @@ async function main() {
   ];
 
   for (const serviceData of servicesData) {
+    const existingService = await prisma.additionalService.findFirst({
+      where: {
+        name: serviceData.name,
+        category: serviceData.category,
+      },
+    });
+
+    if (existingService) {
+      await prisma.additionalService.update({
+        where: { id: existingService.id },
+        data: {
+          description: serviceData.description,
+          price: serviceData.price,
+          active: true,
+        },
+      });
+      continue;
+    }
+
     await prisma.additionalService.create({
       data: {
         ...serviceData,
