@@ -1242,6 +1242,336 @@
         ]
       }
     },
+    "/api/v1/reservations/multi-room": {
+      "post": {
+        "operationId": "MultiRoomReservationsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMultiRoomReservationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Multi-room reservation created successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Customer or room not found"
+          },
+          "409": {
+            "description": "One or more rooms are not available for selected dates"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a multi-room reservation",
+        "tags": [
+          "Reservations"
+        ]
+      },
+      "get": {
+        "operationId": "MultiRoomReservationsController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": {
+              "default": "desc",
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customerId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by customer ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "roomId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by room ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "checkInFrom",
+            "required": false,
+            "in": "query",
+            "description": "Filter by check-in date from",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "checkInTo",
+            "required": false,
+            "in": "query",
+            "description": "Filter by check-in date to",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "checkOutFrom",
+            "required": false,
+            "in": "query",
+            "description": "Filter by check-out date from",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "checkOutTo",
+            "required": false,
+            "in": "query",
+            "description": "Filter by check-out date to",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of multi-room reservations"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all multi-room reservations with pagination and filters",
+        "tags": [
+          "Reservations"
+        ]
+      }
+    },
+    "/api/v1/reservations/multi-room/code/{code}": {
+      "get": {
+        "operationId": "MultiRoomReservationsController_findByCode",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "path",
+            "description": "Multi-room reservation code",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Multi-room reservation details"
+          },
+          "404": {
+            "description": "Multi-room reservation not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get multi-room reservation by code",
+        "tags": [
+          "Reservations"
+        ]
+      }
+    },
+    "/api/v1/reservations/multi-room/{id}": {
+      "get": {
+        "operationId": "MultiRoomReservationsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Multi-room reservation UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Multi-room reservation details"
+          },
+          "404": {
+            "description": "Multi-room reservation not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get multi-room reservation by ID",
+        "tags": [
+          "Reservations"
+        ]
+      },
+      "delete": {
+        "operationId": "MultiRoomReservationsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Multi-room reservation UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Multi-room reservation deleted successfully"
+          },
+          "404": {
+            "description": "Multi-room reservation not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete multi-room reservation (soft delete)",
+        "tags": [
+          "Reservations"
+        ]
+      }
+    },
+    "/api/v1/reservations/multi-room/{id}/confirm": {
+      "post": {
+        "operationId": "MultiRoomReservationsController_confirm",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Multi-room reservation UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Multi-room reservation confirmed"
+          },
+          "400": {
+            "description": "Cannot confirm multi-room reservation"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Confirm all reservations in a multi-room reservation",
+        "tags": [
+          "Reservations"
+        ]
+      }
+    },
+    "/api/v1/reservations/multi-room/{id}/cancel": {
+      "post": {
+        "operationId": "MultiRoomReservationsController_cancel",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Multi-room reservation UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Multi-room reservation cancelled"
+          },
+          "400": {
+            "description": "Cannot cancel multi-room reservation"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cancel all eligible reservations in a multi-room reservation",
+        "tags": [
+          "Reservations"
+        ]
+      }
+    },
     "/api/v1/reservations": {
       "post": {
         "operationId": "ReservationsController_create",
@@ -3137,6 +3467,70 @@
             }
           }
         }
+      },
+      "CreateMultiRoomReservationRoomDto": {
+        "type": "object",
+        "properties": {
+          "roomId": {
+            "type": "string",
+            "description": "Room ID"
+          },
+          "adults": {
+            "type": "number",
+            "example": 1,
+            "default": 1,
+            "description": "Number of adults for this room"
+          },
+          "children": {
+            "type": "number",
+            "example": 0,
+            "default": 0,
+            "description": "Number of children for this room"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Room-specific notes"
+          }
+        },
+        "required": [
+          "roomId"
+        ]
+      },
+      "CreateMultiRoomReservationDto": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "description": "Customer ID"
+          },
+          "checkInDate": {
+            "type": "string",
+            "example": "2026-07-01",
+            "description": "Shared check-in date"
+          },
+          "checkOutDate": {
+            "type": "string",
+            "example": "2026-07-05",
+            "description": "Shared check-out date"
+          },
+          "rooms": {
+            "description": "Rooms to include in the same booking operation",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateMultiRoomReservationRoomDto"
+            }
+          },
+          "notes": {
+            "type": "string",
+            "description": "General notes for the multi-room reservation"
+          }
+        },
+        "required": [
+          "customerId",
+          "checkInDate",
+          "checkOutDate",
+          "rooms"
+        ]
       },
       "CreateReservationDto": {
         "type": "object",

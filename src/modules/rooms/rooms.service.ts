@@ -107,8 +107,16 @@ export class RoomsService {
     const existingRoom = await this.prisma.room.findUnique({
       where: { number },
     });
-    if (existingRoom) {
+    if (existingRoom && existingRoom.deletedAt === null) {
       throw new ConflictException(`Room number ${number} already exists`);
+    }
+    if (existingRoom && existingRoom.deletedAt !== null) {
+      const reactivated = await this.prisma.room.update({
+        where: { id: existingRoom.id },
+        data: { ...createRoomDto, deletedAt: null },
+      });
+      this.logger.log(`Room reactivated: ${reactivated.number}`);
+      return reactivated;
     }
     const room = await this.prisma.room.create({
       data: createRoomDto,

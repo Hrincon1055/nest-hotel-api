@@ -105,6 +105,12 @@ Este script hace lo siguiente:
 5. Ejecuta migraciones y seed.
 6. Muestra URLs locales y URLs de red interna.
 
+Nota tecnica:
+
+- El contenedor de la API ejecuta `npx prisma migrate deploy --config prisma.config.ts` al arrancar.
+- Con la funcionalidad de reserva multiple ahora existe una nueva migracion que crea la tabla `multi_room_reservations` y la relacion opcional con `reservations`.
+- En una instalacion ya existente, el paso critico es asegurar que la migracion se aplique antes de exponer la nueva version de la API.
+
 ## Paso 4: Abrir acceso desde otros equipos
 
 Si quieres que otros equipos entren por la red local, ejecuta:
@@ -208,6 +214,8 @@ docker-compose logs -f frontend
 docker-compose exec api npx prisma migrate deploy --config prisma.config.ts
 ```
 
+Para esta version, este comando debe ejecutarse obligatoriamente si el servidor ya tenia una base de datos previa y se va a actualizar sin recrear los contenedores.
+
 ### Ejecutar seed manualmente
 
 ```powershell
@@ -254,6 +262,19 @@ En la maquina actual:
 ```powershell
 docker-compose exec postgres pg_dump -U hotel_admin hotel_management > backup.sql
 ```
+
+## Actualizacion de una instalacion existente
+
+Si el sistema ya estaba desplegado y solo vas a actualizar backend y base de datos:
+
+1. Haz respaldo de la base de datos.
+2. Actualiza el codigo del proyecto en el servidor.
+3. Ejecuta `docker-compose build api` si cambiaste la imagen o `docker-compose up -d api` si ya tienes la imagen actualizada.
+4. Ejecuta `docker-compose exec api npx prisma migrate deploy --config prisma.config.ts`.
+5. Reinicia la API si no reinicio automaticamente.
+6. Verifica en Swagger los endpoints de `reservations/multi-room`.
+
+No fue necesario cambiar `docker-compose.yml`, `Dockerfile` ni `deploy.ps1` para soportar esta funcionalidad porque la estrategia actual de despliegue ya contempla migraciones Prisma en el arranque del backend.
 
 Luego copia `backup.sql` a la maquina nueva.
 

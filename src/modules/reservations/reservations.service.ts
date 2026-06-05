@@ -41,7 +41,18 @@ export class ReservationsService {
         'Check-out date must be after check-in date',
       );
     }
-    if (startDate < new Date(new Date().setHours(0, 0, 0, 0))) {
+    const startDay = Date.UTC(
+      startDate.getUTCFullYear(),
+      startDate.getUTCMonth(),
+      startDate.getUTCDate(),
+    );
+    const now = new Date();
+    const todayUtc = Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate(),
+    );
+    if (startDay < todayUtc) {
       throw new BadRequestException('Check-in date cannot be in the past');
     }
     const customer = await this.prisma.customer.findFirst({

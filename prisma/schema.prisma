@@ -75,21 +75,22 @@ enum ServiceCategory {
 // ==================== MODELS ====================
 
 model Employee {
-  id                  String         @id @default(uuid())
-  firstName           String         @map("first_name")
-  lastName            String         @map("last_name")
-  email               String         @unique
-  password            String
-  role                EmployeeRole   @default(RECEPTIONIST)
-  status              EmployeeStatus @default(ACTIVE)
-  refreshTokens       RefreshToken[]
-  checkIns            CheckInOut[]   @relation("CheckInEmployee")
-  checkOuts           CheckInOut[]   @relation("CheckOutEmployee")
-  cleaningTasks       CleaningTask[]
-  createdReservations Reservation[]  @relation("CreatedByEmployee")
-  createdAt           DateTime       @default(now()) @map("created_at")
-  updatedAt           DateTime       @updatedAt @map("updated_at")
-  deletedAt           DateTime?      @map("deleted_at")
+  id                           String                 @id @default(uuid())
+  firstName                    String                 @map("first_name")
+  lastName                     String                 @map("last_name")
+  email                        String                 @unique
+  password                     String
+  role                         EmployeeRole           @default(RECEPTIONIST)
+  status                       EmployeeStatus         @default(ACTIVE)
+  refreshTokens                RefreshToken[]
+  checkIns                     CheckInOut[]           @relation("CheckInEmployee")
+  checkOuts                    CheckInOut[]           @relation("CheckOutEmployee")
+  cleaningTasks                CleaningTask[]
+  createdMultiRoomReservations MultiRoomReservation[]
+  createdReservations          Reservation[]          @relation("CreatedByEmployee")
+  createdAt                    DateTime               @default(now()) @map("created_at")
+  updatedAt                    DateTime               @updatedAt @map("updated_at")
+  deletedAt                    DateTime?              @map("deleted_at")
 
   @@index([email])
   @@index([role])
@@ -112,20 +113,21 @@ model RefreshToken {
 }
 
 model Customer {
-  id             String        @id @default(uuid())
-  firstName      String        @map("first_name")
-  lastName       String        @map("last_name")
-  email          String        @unique
-  phone          String?
-  documentType   DocumentType  @default(NATIONAL_ID) @map("document_type")
-  documentNumber String        @map("document_number")
-  address        String?
-  nationality    String?
-  birthDate      DateTime?     @map("birth_date")
-  reservations   Reservation[]
-  createdAt      DateTime      @default(now()) @map("created_at")
-  updatedAt      DateTime      @updatedAt @map("updated_at")
-  deletedAt      DateTime?     @map("deleted_at")
+  id                    String                 @id @default(uuid())
+  firstName             String                 @map("first_name")
+  lastName              String                 @map("last_name")
+  email                 String                 @unique
+  phone                 String?
+  documentType          DocumentType           @default(NATIONAL_ID) @map("document_type")
+  documentNumber        String                 @map("document_number")
+  address               String?
+  nationality           String?
+  birthDate             DateTime?              @map("birth_date")
+  multiRoomReservations MultiRoomReservation[]
+  reservations          Reservation[]
+  createdAt             DateTime               @default(now()) @map("created_at")
+  updatedAt             DateTime               @updatedAt @map("updated_at")
+  deletedAt             DateTime?              @map("deleted_at")
 
   @@unique([documentType, documentNumber])
   @@index([email])
@@ -159,33 +161,57 @@ model Room {
 }
 
 model Reservation {
-  id                  String               @id @default(uuid())
-  reservationCode     String               @unique @map("reservation_code")
-  customerId          String               @map("customer_id")
-  customer            Customer             @relation(fields: [customerId], references: [id])
-  roomId              String               @map("room_id")
-  room                Room                 @relation(fields: [roomId], references: [id])
-  checkInDate         DateTime             @map("check_in_date")
-  checkOutDate        DateTime             @map("check_out_date")
-  adults              Int                  @default(1)
-  children            Int                  @default(0)
-  totalAmount         Decimal              @map("total_amount") @db.Decimal(10, 2)
-  status              ReservationStatus    @default(PENDING)
-  notes               String?
-  createdById         String?              @map("created_by_id")
-  createdBy           Employee?            @relation("CreatedByEmployee", fields: [createdById], references: [id])
-  checkInOut          CheckInOut?
-  reservationServices ReservationService[]
-  createdAt           DateTime             @default(now()) @map("created_at")
-  updatedAt           DateTime             @updatedAt @map("updated_at")
-  deletedAt           DateTime?            @map("deleted_at")
+  id                     String                @id @default(uuid())
+  reservationCode        String                @unique @map("reservation_code")
+  customerId             String                @map("customer_id")
+  customer               Customer              @relation(fields: [customerId], references: [id])
+  multiRoomReservationId String?               @map("multi_room_reservation_id")
+  multiRoomReservation   MultiRoomReservation? @relation(fields: [multiRoomReservationId], references: [id])
+  roomId                 String                @map("room_id")
+  room                   Room                  @relation(fields: [roomId], references: [id])
+  checkInDate            DateTime              @map("check_in_date")
+  checkOutDate           DateTime              @map("check_out_date")
+  adults                 Int                   @default(1)
+  children               Int                   @default(0)
+  totalAmount            Decimal               @map("total_amount") @db.Decimal(10, 2)
+  status                 ReservationStatus     @default(PENDING)
+  notes                  String?
+  createdById            String?               @map("created_by_id")
+  createdBy              Employee?             @relation("CreatedByEmployee", fields: [createdById], references: [id])
+  checkInOut             CheckInOut?
+  reservationServices    ReservationService[]
+  createdAt              DateTime              @default(now()) @map("created_at")
+  updatedAt              DateTime              @updatedAt @map("updated_at")
+  deletedAt              DateTime?             @map("deleted_at")
 
   @@index([reservationCode])
   @@index([customerId])
+  @@index([multiRoomReservationId])
   @@index([roomId])
   @@index([status])
   @@index([checkInDate, checkOutDate])
   @@map("reservations")
+}
+
+model MultiRoomReservation {
+  id              String        @id @default(uuid())
+  reservationCode String        @unique @map("reservation_code")
+  customerId      String        @map("customer_id")
+  customer        Customer      @relation(fields: [customerId], references: [id])
+  checkInDate     DateTime      @map("check_in_date")
+  checkOutDate    DateTime      @map("check_out_date")
+  notes           String?
+  createdById     String?       @map("created_by_id")
+  createdBy       Employee?     @relation(fields: [createdById], references: [id])
+  reservations    Reservation[]
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+  deletedAt       DateTime?     @map("deleted_at")
+
+  @@index([reservationCode])
+  @@index([customerId])
+  @@index([checkInDate, checkOutDate])
+  @@map("multi_room_reservations")
 }
 
 model AdditionalService {

@@ -8,6 +8,7 @@ Sistema completo de gestión hotelera construido con NestJS, Prisma y PostgreSQL
 - **RBAC** (Role-Based Access Control) con 4 roles: ADMIN, MANAGER, RECEPTIONIST, HOUSEKEEPING
 - **Gestión de Habitaciones** con estados, tipos y búsqueda de disponibilidad
 - **Reservas** con validación de disponibilidad y cálculo automático de precios
+- **Reserva múltiple** para agrupar varias habitaciones en una sola operación transaccional
 - **Check-in/Check-out** con actualización automática de estados
 - **Clientes** con historial de reservas
 - **Empleados** con gestión de roles y permisos
@@ -161,6 +162,47 @@ POST   /api/v1/reservations/:id/no-show     # Marcar no-show
 DELETE /api/v1/reservations/:id             # Eliminar
 ```
 
+### Reservas múltiples
+
+```
+GET    /api/v1/reservations/multi-room             # Listar con filtros
+POST   /api/v1/reservations/multi-room             # Crear reserva múltiple
+GET    /api/v1/reservations/multi-room/code/:code  # Buscar por código
+GET    /api/v1/reservations/multi-room/:id         # Ver detalle
+POST   /api/v1/reservations/multi-room/:id/confirm # Confirmar grupo
+POST   /api/v1/reservations/multi-room/:id/cancel  # Cancelar grupo
+```
+
+Payload base para creación:
+
+```json
+{
+  "customerId": "uuid-del-cliente",
+  "checkInDate": "2026-07-01",
+  "checkOutDate": "2026-07-05",
+  "notes": "Reserva familiar",
+  "rooms": [
+    {
+      "roomId": "uuid-habitacion-1",
+      "adults": 2,
+      "children": 1,
+      "notes": "Cuna adicional"
+    },
+    {
+      "roomId": "uuid-habitacion-2",
+      "adults": 2,
+      "children": 0
+    }
+  ]
+}
+```
+
+Notas de compatibilidad:
+
+- Los endpoints actuales de reserva individual permanecen sin cambios.
+- Cada habitación del grupo crea una reserva individual enlazada a un registro agrupador.
+- La operación completa se ejecuta dentro de una transacción Prisma y se revierte si falla cualquier validación.
+
 ### Servicios Adicionales
 
 ```
@@ -204,6 +246,7 @@ npm run docker:logs     # Ver logs de Docker
 
 npm run prisma:generate # Generar cliente Prisma
 npm run prisma:migrate  # Ejecutar migraciones
+npm run prisma:migrate:prod # Aplicar migraciones en producción
 npm run prisma:studio   # Abrir Prisma Studio
 npm run prisma:seed     # Ejecutar seeds
 npm run prisma:reset    # Reset de base de datos
