@@ -6,7 +6,7 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-RUN apk add --no-cache openssl
+RUN apk add --no-cache openssl tzdata
 
 COPY package*.json ./
 COPY nest-cli.json ./
@@ -25,7 +25,10 @@ RUN npm run build
 FROM node:20-alpine AS production
 WORKDIR /app
 
-RUN apk add --no-cache openssl dumb-init
+RUN apk add --no-cache openssl dumb-init tzdata
+
+ENV TZ=America/Bogota
+RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nestjs
