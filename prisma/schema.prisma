@@ -88,9 +88,9 @@ model Employee {
   cleaningTasks                CleaningTask[]
   createdMultiRoomReservations MultiRoomReservation[]
   createdReservations          Reservation[]          @relation("CreatedByEmployee")
-  createdAt                    DateTime               @default(now()) @map("created_at")
-  updatedAt                    DateTime               @updatedAt @map("updated_at")
-  deletedAt                    DateTime?              @map("deleted_at")
+  createdAt                    DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt                    DateTime               @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt                    DateTime?              @map("deleted_at") @db.Timestamptz(3)
 
   @@index([email])
   @@index([role])
@@ -103,9 +103,9 @@ model RefreshToken {
   token      String    @unique
   employeeId String    @map("employee_id")
   employee   Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  expiresAt  DateTime  @map("expires_at")
-  createdAt  DateTime  @default(now()) @map("created_at")
-  revokedAt  DateTime? @map("revoked_at")
+  expiresAt  DateTime  @map("expires_at") @db.Timestamptz(3)
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  revokedAt  DateTime? @map("revoked_at") @db.Timestamptz(3)
 
   @@index([token])
   @@index([employeeId])
@@ -122,12 +122,12 @@ model Customer {
   documentNumber        String                 @map("document_number")
   address               String?
   nationality           String?
-  birthDate             DateTime?              @map("birth_date")
+  birthDate             DateTime?              @map("birth_date") @db.Timestamptz(3)
   multiRoomReservations MultiRoomReservation[]
   reservations          Reservation[]
-  createdAt             DateTime               @default(now()) @map("created_at")
-  updatedAt             DateTime               @updatedAt @map("updated_at")
-  deletedAt             DateTime?              @map("deleted_at")
+  createdAt             DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime               @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt             DateTime?              @map("deleted_at") @db.Timestamptz(3)
 
   @@unique([documentType, documentNumber])
   @@index([email])
@@ -149,9 +149,9 @@ model Room {
   reservations  Reservation[]
   cleaningTasks CleaningTask[]
   checkInOuts   CheckInOut[]
-  createdAt     DateTime       @default(now()) @map("created_at")
-  updatedAt     DateTime       @updatedAt @map("updated_at")
-  deletedAt     DateTime?      @map("deleted_at")
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt     DateTime?      @map("deleted_at") @db.Timestamptz(3)
 
   @@index([number])
   @@index([status])
@@ -169,8 +169,8 @@ model Reservation {
   multiRoomReservation   MultiRoomReservation? @relation(fields: [multiRoomReservationId], references: [id])
   roomId                 String                @map("room_id")
   room                   Room                  @relation(fields: [roomId], references: [id])
-  checkInDate            DateTime              @map("check_in_date")
-  checkOutDate           DateTime              @map("check_out_date")
+  checkInDate            DateTime              @map("check_in_date") @db.Timestamptz(3)
+  checkOutDate           DateTime              @map("check_out_date") @db.Timestamptz(3)
   adults                 Int                   @default(1)
   children               Int                   @default(0)
   totalAmount            Decimal               @map("total_amount") @db.Decimal(10, 2)
@@ -180,9 +180,9 @@ model Reservation {
   createdBy              Employee?             @relation("CreatedByEmployee", fields: [createdById], references: [id])
   checkInOut             CheckInOut?
   reservationServices    ReservationService[]
-  createdAt              DateTime              @default(now()) @map("created_at")
-  updatedAt              DateTime              @updatedAt @map("updated_at")
-  deletedAt              DateTime?             @map("deleted_at")
+  createdAt              DateTime              @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt              DateTime              @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt              DateTime?             @map("deleted_at") @db.Timestamptz(3)
 
   @@index([reservationCode])
   @@index([customerId])
@@ -198,15 +198,15 @@ model MultiRoomReservation {
   reservationCode String        @unique @map("reservation_code")
   customerId      String        @map("customer_id")
   customer        Customer      @relation(fields: [customerId], references: [id])
-  checkInDate     DateTime      @map("check_in_date")
-  checkOutDate    DateTime      @map("check_out_date")
+  checkInDate     DateTime      @map("check_in_date") @db.Timestamptz(3)
+  checkOutDate    DateTime      @map("check_out_date") @db.Timestamptz(3)
   notes           String?
   createdById     String?       @map("created_by_id")
   createdBy       Employee?     @relation(fields: [createdById], references: [id])
   reservations    Reservation[]
-  createdAt       DateTime      @default(now()) @map("created_at")
-  updatedAt       DateTime      @updatedAt @map("updated_at")
-  deletedAt       DateTime?     @map("deleted_at")
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt       DateTime?     @map("deleted_at") @db.Timestamptz(3)
 
   @@index([reservationCode])
   @@index([customerId])
@@ -222,9 +222,9 @@ model AdditionalService {
   category            ServiceCategory      @default(OTHER)
   active              Boolean              @default(true)
   reservationServices ReservationService[]
-  createdAt           DateTime             @default(now()) @map("created_at")
-  updatedAt           DateTime             @updatedAt @map("updated_at")
-  deletedAt           DateTime?            @map("deleted_at")
+  createdAt           DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt           DateTime?            @map("deleted_at") @db.Timestamptz(3)
 
   @@index([category])
   @@index([active])
@@ -241,8 +241,8 @@ model ReservationService {
   unitPrice     Decimal           @map("unit_price") @db.Decimal(10, 2)
   totalPrice    Decimal           @map("total_price") @db.Decimal(10, 2)
   notes         String?
-  serviceDate   DateTime          @default(now()) @map("service_date")
-  createdAt     DateTime          @default(now()) @map("created_at")
+  serviceDate   DateTime          @default(now()) @map("service_date") @db.Timestamptz(3)
+  createdAt     DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
 
   @@index([reservationId])
   @@index([serviceId])
@@ -255,15 +255,15 @@ model CheckInOut {
   reservation        Reservation @relation(fields: [reservationId], references: [id])
   roomId             String      @map("room_id")
   room               Room        @relation(fields: [roomId], references: [id])
-  checkInTime        DateTime?   @map("check_in_time")
+  checkInTime        DateTime?   @map("check_in_time") @db.Timestamptz(3)
   checkInEmployeeId  String?     @map("check_in_employee_id")
   checkInEmployee    Employee?   @relation("CheckInEmployee", fields: [checkInEmployeeId], references: [id])
-  checkOutTime       DateTime?   @map("check_out_time")
+  checkOutTime       DateTime?   @map("check_out_time") @db.Timestamptz(3)
   checkOutEmployeeId String?     @map("check_out_employee_id")
   checkOutEmployee   Employee?   @relation("CheckOutEmployee", fields: [checkOutEmployeeId], references: [id])
   notes              String?
-  createdAt          DateTime    @default(now()) @map("created_at")
-  updatedAt          DateTime    @updatedAt @map("updated_at")
+  createdAt          DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime    @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   @@index([reservationId])
   @@index([roomId])
@@ -277,12 +277,12 @@ model CleaningTask {
   employeeId    String?        @map("employee_id")
   employee      Employee?      @relation(fields: [employeeId], references: [id])
   status        CleaningStatus @default(PENDING)
-  scheduledDate DateTime       @map("scheduled_date")
-  completedDate DateTime?      @map("completed_date")
+  scheduledDate DateTime       @map("scheduled_date") @db.Timestamptz(3)
+  completedDate DateTime?      @map("completed_date") @db.Timestamptz(3)
   notes         String?
   priority      Int            @default(1)
-  createdAt     DateTime       @default(now()) @map("created_at")
-  updatedAt     DateTime       @updatedAt @map("updated_at")
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   @@index([roomId])
   @@index([employeeId])
@@ -301,7 +301,7 @@ model AuditLog {
   employeeId String?  @map("employee_id")
   ipAddress  String?  @map("ip_address")
   userAgent  String?  @map("user_agent")
-  createdAt  DateTime @default(now()) @map("created_at")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
 
   @@index([tableName, recordId])
   @@index([employeeId])
